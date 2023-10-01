@@ -40,6 +40,13 @@ interface SuspenseWrapperProps {
   children: ReactElement;
 }
 
+interface AsyncWrapperProps {
+  loading: boolean;
+  fulfilled: boolean;
+  error?: unknown;
+  children: React.JSX;
+}
+
 interface Query {
   limit?: number;
   page?: number;
