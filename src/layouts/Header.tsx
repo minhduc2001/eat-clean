@@ -26,7 +26,7 @@ function Header() {
   //   </div>
   // );
   return (
-    <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+    <header className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center h-[18px] my-2">
         <div className="flex items-center">
           <div className="text-sm">Free Shipping on Orders over $100</div>
@@ -80,7 +80,7 @@ function Header() {
           <span className="cursor-pointer text-sm">Login or register</span>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
 

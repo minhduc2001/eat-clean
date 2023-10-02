@@ -1,7 +1,13 @@
+import Swiper from "@/components/Swiper";
+import AsyncWrapper from "@/layouts/AsyncWrapper";
 import React from "react";
 
 function HomePage() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <AsyncWrapper loading={false} fulfilled={Boolean([])}>
+      <div className="h-screen"></div>
+    </AsyncWrapper>
+  );
 }
 
 export default HomePage;
