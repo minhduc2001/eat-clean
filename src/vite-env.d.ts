@@ -47,6 +47,11 @@ interface AsyncWrapperProps {
   children: React.JSX;
 }
 
+interface HelmetProps {
+  title: string;
+  description: string;
+}
+
 interface Query {
   limit?: number;
   page?: number;

@@ -7,7 +7,7 @@ import Header from "./Header";
 function LayoutWrapper() {
   return (
     <div>
-      <Header></Header>
+      <Header />
       <Navbar />
       <Outlet />
       <Footer />
