@@ -1,12 +1,25 @@
+import Card from "@/components/Card";
+import Helmet from "@/components/Helmet";
 import Swiper from "@/components/Swiper";
 import AsyncWrapper from "@/layouts/AsyncWrapper";
 import React from "react";
 
 function HomePage() {
   return (
-    <AsyncWrapper loading={false} fulfilled={Boolean([])}>
-      <div className="h-screen"></div>
-    </AsyncWrapper>
+    <>
+      <Helmet title="Home" description="home page" />
+      <AsyncWrapper loading={false} fulfilled={Boolean([])}>
+        <div className="h-screen">
+          <Card
+            title="Côm bô trà gọi lứt đông trùng"
+            description=""
+            amount={220000}
+            image="https://i.imgur.com/gjML3hG.jpg"
+            discount={27}
+          ></Card>
+        </div>
+      </AsyncWrapper>
+    </>
   );
 }
 
