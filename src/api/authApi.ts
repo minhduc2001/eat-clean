@@ -4,7 +4,7 @@ import Api from "./api";
 class AuthApi {
   private baseUrl: string;
   constructor() {
-    this.baseUrl = "/auth";
+    this.baseUrl = "";
   }
 
   async login(

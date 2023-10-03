@@ -1,12 +1,24 @@
 import authApi from "@/api/authApi";
+import { toastOption } from "@/configs/notification.config";
 import { LoadingStatus } from "@/enums/enum";
-import { ILoginData, IUser } from "@/interfaces";
+import { ILoginData, IRegisterData, IUser } from "@/interfaces";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 export const requestLogin = createAsyncThunk(
   "auth/login",
   async (input: ILoginData, thunkAPI) => {
     const response = await authApi.login(input);
+    if (!response.success)
+      throw { message: response.message, errorCode: response.errorCode };
+    return response.data;
+  }
+);
+
+export const requestRegister = createAsyncThunk(
+  "auth/register",
+  async (input: IRegisterData, thunkAPI) => {
+    const response = await authApi.register(input);
     if (!response.success)
       throw { message: response.message, errorCode: response.errorCode };
     return response.data;
@@ -42,9 +54,11 @@ const authSlice = createSlice({
       .addMatcher(
         (action) => action.type.includes("rejected"),
         (state, action) => {
+          toast.error("haha", toastOption);
+
           state.error = {
-            message: action.error.message ?? action.payload.message,
-            errorCode: action.error.code,
+            message: action.payload?.message ?? action.error.message,
+            errorCode: action.payload?.errorCode ?? action.error.code,
           };
           state.loading = LoadingStatus.Rejected;
         }

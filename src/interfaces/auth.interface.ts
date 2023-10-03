@@ -19,11 +19,11 @@ export interface ILoginData {
 }
 
 export interface IRegisterData {
-  username: string;
+  username?: string;
   email: string;
-  phone: string;
-  birthday: Date;
-  password: string;
+  phone?: string;
+  birthday?: Date;
+  password?: string;
   rePassword?: string;
 }
 

@@ -3,19 +3,26 @@ import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Helmet from "@/components/Helmet";
+import { useAppDispatch } from "@/redux/hooks";
+import { requestRegister } from "@/redux/features/authSlice";
+import { toast } from "react-toastify";
+import { toastOption } from "@/configs/notification.config";
 
 interface Account {
-  username: string;
+  email: string;
   password: string;
 }
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
-  const [account, setAccount] = useState<Account>({
-    username: "",
+  const [accountLogin, setAccountLogin] = useState<Account>({
+    email: "",
     password: "",
   });
+  const [email, setEmail] = useState<string>("");
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const check = JSON.parse(localStorage.getItem("rememberMe") ?? "{}");
@@ -26,8 +33,8 @@ function LoginPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setAccount({
-      ...account,
+    setAccountLogin({
+      ...accountLogin,
       [name]: value,
     });
   };
@@ -38,6 +45,20 @@ function LoginPage() {
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleSubmitRegister = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // @ts-ignore
+    dispatch(requestRegister({ email: e.target["email"].value }))
+      .unwrap()
+      .then((data: any) => {
+        console.log(data);
+        // toast.error(data.message, toastOption);
+      })
+      .catch((e: Error) => {
+        toast.error(e.message, toastOption);
+      });
   };
 
   return (
@@ -57,15 +78,15 @@ function LoginPage() {
             <div className="border-b mb-4"></div>
             <div className="mb-4 flex w-full items-center">
               <label
-                htmlFor="usernameOrEmail"
+                htmlFor="email-login"
                 className="text-gray-600 block w-[50%] pr-2 text-sm"
               >
-                {"Username or Email Address".toUpperCase()}
+                {"Email Address".toUpperCase()}
               </label>
               <input
                 type="text"
-                id="usernameOrEmail"
-                name="usernameOrEmail"
+                id="email-login"
+                name="email"
                 className="w-full p-2 border-none border-gray-300 rounded focus:outline-none text-sm"
                 placeholder="Enter your username or email"
                 required
@@ -123,7 +144,11 @@ function LoginPage() {
             </div>
           </form>
 
-          <form action="#" className="w-1/2 bg-white p-8 rounded-lg shadow-lg">
+          <form
+            action="#"
+            className="w-1/2 bg-white p-8 rounded-lg shadow-lg"
+            onSubmit={handleSubmitRegister}
+          >
             <h1 className="text-2xl font-semibold mb-4">Register</h1>
             <div className="border-b mb-4"></div>
             <div className="mb-4 flex w-full items-center">
@@ -136,6 +161,7 @@ function LoginPage() {
               <input
                 type="text"
                 id="emali"
+                name="email"
                 className="w-full p-2 border-none border-gray-300 rounded focus:outline-none text-sm"
                 placeholder="Enter your username or email"
                 required
@@ -154,7 +180,10 @@ function LoginPage() {
               </label>
             </div>
             <div className="text-green-500">
-              <button className="w-20 bg-green-500 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm">
+              <button
+                type="submit"
+                className="w-20 bg-green-500 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm"
+              >
                 Register
               </button>
             </div>
