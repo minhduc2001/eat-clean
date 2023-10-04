@@ -54,13 +54,15 @@ const authSlice = createSlice({
       .addMatcher(
         (action) => action.type.includes("rejected"),
         (state, action) => {
-          toast.error("haha", toastOption);
+          console.log(action);
 
           state.error = {
             message: action.payload?.message ?? action.error.message,
             errorCode: action.payload?.errorCode ?? action.error.code,
           };
           state.loading = LoadingStatus.Rejected;
+
+          toast.error(state.error.message, toastOption);
         }
       )
       .addMatcher(

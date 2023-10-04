@@ -4,7 +4,7 @@ import Api from "./api";
 class AuthApi {
   private baseUrl: string;
   constructor() {
-    this.baseUrl = "";
+    this.baseUrl = "/users";
   }
 
   async login(
@@ -12,7 +12,8 @@ class AuthApi {
   ): Promise<ApiResponse<IUser & IToken>> {
     return Api.POST<ApiResponse<IUser & IToken>>(
       this.baseUrl + "/login",
-      loginInfomation
+      // @ts-ignore
+      new URLSearchParams(loginInfomation)
     );
   }
 

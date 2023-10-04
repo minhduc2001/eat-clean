@@ -53,10 +53,9 @@ class Api {
     return {
       baseURL: "http://192.168.1.12:8090/api/v1",
       headers: {
-        ContentType: "application/json",
-        // ContentType: 'multipart/form-data',
-
-        Accept: "application/json",
+        // ContentType: "application/json",
+        // // ContentType: 'multipart/form-data',
+        // Accept: "application/json",
       },
     };
   }
@@ -67,7 +66,7 @@ class Api {
 
   public async GET<T>(url: string, params?: any): Promise<T> {
     const api = await this.AXIOS();
-    return api.get(url, { params: params });
+    return api.get(url);
   }
 
   public async POST<T>(url: string, body: any, params?: any): Promise<T> {

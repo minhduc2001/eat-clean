@@ -1,3 +1,4 @@
+import Blog from "@/components/Blog";
 import Card from "@/components/Card";
 import Categories from "@/components/Categories";
 import Helmet from "@/components/Helmet";
@@ -12,6 +13,9 @@ function HomePage() {
       <AsyncWrapper loading={false} fulfilled={Boolean([])}>
         <div>
           <Categories></Categories>
+        </div>
+        <div>
+          <Blog></Blog>
         </div>
         <div className="h-screen">
           <Card

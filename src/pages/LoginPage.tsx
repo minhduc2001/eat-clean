@@ -1,12 +1,10 @@
-import { Button, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Helmet from "@/components/Helmet";
 import { useAppDispatch } from "@/redux/hooks";
-import { requestRegister } from "@/redux/features/authSlice";
-import { toast } from "react-toastify";
-import { toastOption } from "@/configs/notification.config";
+import { requestLogin, requestRegister } from "@/redux/features/authSlice";
+import BackDropLoading from "@/components/BackDropLoading";
 
 interface Account {
   email: string;
@@ -16,6 +14,7 @@ interface Account {
 function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [accountLogin, setAccountLogin] = useState<Account>({
     email: "",
     password: "",
@@ -25,9 +24,13 @@ function LoginPage() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const check = JSON.parse(localStorage.getItem("rememberMe") ?? "{}");
+    const check = JSON.parse(localStorage.getItem("remember") ?? "{}");
     if (check?.rememberMe) {
       setRememberMe(true);
+      setAccountLogin({
+        email: check.email,
+        password: check.password,
+      });
     }
   }, []);
 
@@ -39,26 +42,54 @@ function LoginPage() {
     });
   };
 
-  const handleRememberPassword = () => {
+  const onRememberPassword = () => {
     setRememberMe((prev) => !prev);
+  };
+
+  const handleRememberPassword = (remember: boolean) => {
+    if (remember) {
+      localStorage.setItem(
+        "remember",
+        JSON.stringify({
+          rememberMe: true,
+          ...accountLogin,
+        })
+      );
+    } else {
+      localStorage.removeItem("remember");
+    }
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  const handleSubmitLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setLoading(true);
+    handleRememberPassword(rememberMe);
+
+    dispatch(requestLogin(accountLogin))
+      .unwrap()
+      .then((data) => {
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+      });
+  };
+
   const handleSubmitRegister = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // @ts-ignore
-    dispatch(requestRegister({ email: e.target["email"].value }))
+    setLoading(true);
+
+    dispatch(requestRegister({ email: email }))
       .unwrap()
-      .then((data: any) => {
-        console.log(data);
-        // toast.error(data.message, toastOption);
+      .then((data) => {
+        setLoading(false);
       })
-      .catch((e: Error) => {
-        toast.error(e.message, toastOption);
-      });
+      .catch((e) => setLoading(false));
   };
 
   return (
@@ -73,7 +104,11 @@ function LoginPage() {
         </div>
 
         <div className="flex justify-center">
-          <form action="#" className="w-1/2 bg-white p-8 rounded-lg shadow-lg">
+          <form
+            action="#"
+            className="w-1/2 bg-white p-8 rounded-lg shadow-lg"
+            onSubmit={handleSubmitLogin}
+          >
             <h1 className="text-2xl font-semibold mb-4">Login</h1>
             <div className="border-b mb-4"></div>
             <div className="mb-4 flex w-full items-center">
@@ -84,13 +119,14 @@ function LoginPage() {
                 {"Email Address".toUpperCase()}
               </label>
               <input
-                type="text"
+                type="email"
                 id="email-login"
                 name="email"
                 className="w-full p-2 border-none border-gray-300 rounded focus:outline-none text-sm"
                 placeholder="Enter your username or email"
                 required
                 onChange={handleInputChange}
+                defaultValue={accountLogin.email ?? ""}
               />
             </div>
 
@@ -112,6 +148,7 @@ function LoginPage() {
                   placeholder="Enter your password"
                   required
                   onChange={handleInputChange}
+                  defaultValue={accountLogin.password ?? ""}
                 />
                 <span
                   className="absolute right-3 top-2 cursor-pointer"
@@ -125,14 +162,18 @@ function LoginPage() {
             <div className="border-b mb-4"></div>
 
             <div className="mb-4 flex items-center">
-              <button className="w-20 bg-green-500 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm">
+              <button
+                type="submit"
+                className="w-20 bg-green-500 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm"
+              >
                 Login
               </button>
               <input
                 type="checkbox"
                 id="rememberMe"
+                name="rememberMe"
                 className="mr-2"
-                onChange={handleRememberPassword}
+                onChange={onRememberPassword}
                 checked={rememberMe}
               />
               <label htmlFor="rememberMe" className="text-gray-600">
@@ -159,12 +200,15 @@ function LoginPage() {
                 {"Email Address".toUpperCase()}
               </label>
               <input
-                type="text"
+                type="email"
                 id="emali"
                 name="email"
                 className="w-full p-2 border-none border-gray-300 rounded focus:outline-none text-sm"
                 placeholder="Enter your username or email"
                 required
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
               />
             </div>
 
@@ -190,6 +234,7 @@ function LoginPage() {
           </form>
         </div>
       </div>
+      <BackDropLoading loading={loading}></BackDropLoading>
     </>
   );
 }
