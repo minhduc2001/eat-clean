@@ -1,30 +1,9 @@
-import React, { Fragment } from "react";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import PersonIcon from "@mui/icons-material/Person";
+
 function Header() {
-  // return (
-  //   <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-  //     <div className="flex space-between h-[18px] my-[10px]">
-  //       <div className="text-[13px] w-[100%]">
-  //         Free Shipping on Orders over $100
-  //       </div>
-  //       <div className="w-[30%] flex items-center text-[13px]">
-  //         <div className="flex justify-evenly w-[40%]">
-  //           <FacebookIcon className="cursor-pointer" fontSize="small" />
-  //           <TwitterIcon className="cursor-pointer" fontSize="small" />
-  //           <InstagramIcon className="cursor-pointer" fontSize="small" />
-  //         </div>
-  //         <div className="w-[2px] h-[100%] bg-black"></div>
-  //         <div className="flex justify-evenly w-[55%]">
-  //           <PersonIcon className="cursor-pointer" fontSize="small" />
-  //           <span className="cursor-pointer">Login or register</span>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
   return (
     <header className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center h-[18px] my-2">

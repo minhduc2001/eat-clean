@@ -1,6 +1,87 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import SearchIcon from "@mui/icons-material/Search";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import Search from "@/components/Search";
+import styled from "styled-components";
+import MiniCart from "@/components/MiniCart";
 
 function NavBar() {
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  const [cartItemCount, setCartItemCount] = useState<number>(88);
+  const [cartOpen, setCartOpen] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
+
+  const cartRef = useRef<HTMLDivElement | null>(null);
+
+  const handleSearchOpen = () => {
+    setSearchOpen(!searchOpen);
+  };
+
+  const handleSearchChange = (e: any) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleCartClick = (open: boolean) => {
+    setCartOpen(open);
+  };
+
+  return (
+    <div className="bg-gray-800 border-gray-200 px-4 lg:px-6 py-2.5">
+      <nav className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 text-white flex justify-between items-center ">
+        <div className="text-2xl font-bold flex items-center">
+          <img src="src/assets/logo.png" alt="logo" className="w-10 h-10" />
+          <span className="ml-4">EAT CLEAN</span>
+        </div>
+        <div className="flex items-center">
+          <ul className="flex ml-6 space-x-4">
+            <li>
+              <a href="#">Home</a>
+            </li>
+            <li>
+              <a href="#">Foods</a>
+            </li>
+            <li>
+              <a href="#">Blog</a>
+            </li>
+            <li>
+              <a href="#">Tool</a>
+            </li>
+            <li>
+              <a href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+        <div className="flex items-center">
+          <div className="mr-4 relative">
+            <button onClick={() => setSearchOpen(!searchOpen)}>
+              <SearchIcon></SearchIcon>
+            </button>
+            {searchOpen && (
+              <input
+                type="text"
+                className="bg-gray-700 text-white rounded p-1 absolute -top-0.5 right-10"
+                placeholder="Search"
+              />
+            )}
+            {/* {searchOpen && <Search onClose={closeSearch}></Search>} */}
+          </div>
+          <div className="relative z-50" ref={cartRef}>
+            <button onClick={() => setCartOpen(!cartOpen)}>
+              <ShoppingBagIcon></ShoppingBagIcon>
+            </button>
+            {cartItemCount > 0 && (
+              <span className="bg-red-500 text-white rounded-full w-1 h-1 absolute top-0.5 right-0 text-xs font-light">
+                <p className="mt-1 ml-0.5">{cartItemCount}</p>
+              </span>
+            )}
+            {cartOpen && (
+              <MiniCart cartRef={cartRef.current} onClose={handleCartClick} />
+            )}
+          </div>
+        </div>
+      </nav>
+    </div>
+  );
   return (
     <header className="bg-gray-400 border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
       <nav className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -81,7 +162,7 @@ function NavBar() {
                   href="#"
                   className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 >
-                  Company
+                  Foods
                 </a>
               </li>
               <li>
@@ -89,7 +170,7 @@ function NavBar() {
                   href="#"
                   className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 >
-                  Marketplace
+                  Blog
                 </a>
               </li>
               <li>
@@ -97,7 +178,7 @@ function NavBar() {
                   href="#"
                   className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 >
-                  Features
+                  Tool
                 </a>
               </li>
               <li>
@@ -105,7 +186,7 @@ function NavBar() {
                   href="#"
                   className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 >
-                  Team
+                  Contact
                 </a>
               </li>
               <li>

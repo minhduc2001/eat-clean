@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/utils/convert";
 import {
   Paper,
   Table,
@@ -41,11 +42,10 @@ function TableCart() {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell>PRODUCT</TableCell>
-            <TableCell align="right"></TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell align="center">PRODUCT</TableCell>
+            <TableCell align="center">Price</TableCell>
+            <TableCell align="center">quantity</TableCell>
+            <TableCell align="center">SUBTOTAL</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -54,11 +54,28 @@ function TableCart() {
               key={row.name}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row"></TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
+              <TableCell component="th" scope="row">
+                <img
+                  className="w-[50px] h-[76px] object-cover shadow-lg shadow-gray-600"
+                  src="https://demo.kaliumtheme.com/bookstore/wp-content/uploads/2019/02/2-Rules-for-Life-An-Antidote-to-Chaos-by-Jordan-B.-Peterson-820x1238.jpg"
+                  alt=""
+                />
+              </TableCell>
+              <TableCell align="center">
+                <p className="text-xl">
+                  {"12 Rules for Life: An Antidote to Chaos"}
+                </p>
+              </TableCell>
+              <TableCell align="center">
+                <p className="text-xl">{formatCurrency(9209809)}</p>
+              </TableCell>
+              <TableCell align="center">
+                <input
+                  type="number"
+                  className="w-[90px] h-[20px] p-6 bg-gray-200 focus:outline-none text-xl"
+                />
+              </TableCell>
+              <TableCell align="center">{row.carbs}</TableCell>
             </TableRow>
           ))}
         </TableBody>
