@@ -1,14 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-* {
-  margin: 0;
-  padding: 0;
-}
-
 h2 {
   color: #0b850b;
   letter-spacing: 1.5px;
+  font-size: 35px;
   text-transform: uppercase;
   font-family: Roboto;
   position: relative;
@@ -22,4 +15,13 @@ h2 {
     margin: auto;
     border-bottom: 1px solid #0b850b;
   }
+}
+
+.container-content {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+.btn-action {
+  padding-inline: 30px;
+  padding-block: 10px;
 }

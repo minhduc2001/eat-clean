@@ -103,10 +103,10 @@ function LoginPage() {
           </p>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-around">
           <form
             action="#"
-            className="w-1/2 bg-white p-8 rounded-lg shadow-lg"
+            className="w-1/2 mr-5 bg-white p-8 rounded-lg shadow-lg"
             onSubmit={handleSubmitLogin}
           >
             <h1 className="text-2xl font-semibold mb-4">Login</h1>

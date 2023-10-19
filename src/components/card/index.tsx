@@ -1,5 +1,5 @@
-import { formatCurrency, roundDownToNearestThousand } from "@/utils/convert";
-
+import { formatCurrency, roundDownToNearestThousand } from "@/utils/convert.tsx";
+import "./index.scss";
 interface CardProps {
   image: string;
   title: string;
@@ -10,7 +10,7 @@ interface CardProps {
 
 function Card(props: CardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 w-[278px] h-[395px]">
+    <div className="bg-white rounded-lg shadow-md p-4 w-[278px] h-[395px] container">
       {props.image && (
         <div className="mb-4 w-[248px] h-[248px] relative">
           <img

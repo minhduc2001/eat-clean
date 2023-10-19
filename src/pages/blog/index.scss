@@ -1,9 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-* {
-  margin: 0;
-  padding: 0;
+.filter-content {
+  cursor: pointer;
+  font-family: Roboto;
+  font-size: 10pt;
+  padding: 5px;
+  padding-inline: 15px;
+  border: 0.5px #0b850b solid;
+  border-radius: 20px;
+  margin-right: 5px;
+  &:hover {
+    color: #0b850b;
+  }
+}
+
+span {
+  font-family: Roboto;
+  font-size: 11pt;
 }
 
 h2 {
