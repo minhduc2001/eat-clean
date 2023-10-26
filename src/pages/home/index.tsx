@@ -1,5 +1,5 @@
 import Helmet from "@/components/Helmet.tsx";
-import React from "react";
+import React, {useEffect} from "react";
 import AsyncWrapper from "@/layouts/AsyncWrapper.tsx";
 import {Carousel, Image} from "antd";
 import Slider from "react-slick";
@@ -9,6 +9,9 @@ import "slick-carousel/slick/slick-theme.css";
 import "./index.scss"
 import ProductCard from "@/components/product";
 import BlogCard from "@/components/blog";
+import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
+import {getProductByPage} from "@/redux/features/productSlice.ts";
+import {RootState} from "@/redux/store.ts";
 
 
 function HomePage() {
@@ -20,6 +23,14 @@ function HomePage() {
     slidesToScroll: 1,
     className: "slider center"
   };
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(getProductByPage({page: 0, limit: 10}))
+  }, [])
+
+  const products = useAppSelector((root: RootState) => root.product.products)
 
   return (
     <>
@@ -99,13 +110,13 @@ function HomePage() {
               <h3>
                 Chế độ ăn giảm cân eat clean
               </h3>
-              <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-keto-22-2048x1458.jpg"}/>
+              <img src={"/img_1.jpeg"}/>
             </div>
             <div className={"menu-item"}>
               <h3>
                 Chế độ ăn giảm cân eat clean
               </h3>
-              <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-keto-22-2048x1458.jpg"}/>
+              <img src={"/img_2.jpeg"}/>
             </div>
           </div>
         </div>

@@ -22,6 +22,13 @@ interface ApiListResponse<T> {
   };
 }
 
+interface  IMetadata {
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  currentPage?: number;
+}
+
 interface ErrorResponse {
   message?: string;
   errorCode?: string;
