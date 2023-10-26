@@ -4,7 +4,10 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "@/components/product";
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import { BsFillBookmarkFill } from 'react-icons/bs';
+import { BsBookmark } from 'react-icons/bs';
+import {Button, Rating, TextField} from "@mui/material";
+import CommentCard from "@/components/comment";
 function ProductDetailPage() {
     return (
         <div className={"flex flex-col justify-center items-center bg-gray-50"}>
@@ -13,16 +16,22 @@ function ProductDetailPage() {
                     chi tiết sản phẩm
                 </h2>
             </div>
-            <div className={"container-content bg-white mt-3 flex w-[75%]"}>
+            <div className={"container-content bg-white mt-3 flex w-[75%] relative"}>
+                <div className={"absolute top-[0px] left-[15px] text-yellow-400 z-10 text-5xl"}>
+                    <BsFillBookmarkFill />
+                </div>
                 <div className={"slider-wrap w-1/3"}>
                     <div className={"single-item p-3"}>
                         <Slider {...{
                             dots: false,
                             infinite: true,
-                            speed: 500,
                             slidesToShow: 1,
                             slidesToScroll: 1,
-                            className: "slider w-full"
+                            autoplay: true,
+                            speed: 3000,
+                            autoplaySpeed: 5000,
+                            cssEase: "linear",
+                            className: "slider center"
                         }}>
                             <div>
                                 <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
@@ -203,29 +212,24 @@ function ProductDetailPage() {
                     </Slider>
                 </div>
             </div>
+
+            <div className={"container-content bg-white mt-3 p-3 w-[75%]"}>
+                <h1 className={"uppercase text-xl font-medium mb-5"}>Đánh giá</h1>
+                <Rating size="large"/>
+                <textarea id="note" name="note" rows="3" className={"border mt-3 w-full p-3"}></textarea>
+                <div className={'flex flex-col items-end'}>
+                    <Button variant={'contained'} color={'success'}>Đánh giá</Button>
+                </div>
+
+                <div className={"list-cmt"}>
+                    <CommentCard />
+                    <CommentCard />
+                    <CommentCard />
+                    <CommentCard />
+                </div>
+
+            </div>
         </div>
-    );
-}
-
-function NextArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-        <div
-            className={className}
-            style={{display: "flex", background: "gray", borderRadius: 50, padding:0, justifyContent: "center", alignItems: 'center' }}
-            onClick={onClick}
-        />
-    );
-}
-
-function PrevArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-        <div
-            className={className}
-            style={{ ...style, display: "block", background: "green" }}
-            onClick={onClick}
-        />
     );
 }
 export default ProductDetailPage;

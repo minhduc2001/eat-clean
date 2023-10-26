@@ -51,7 +51,7 @@ class Api {
 
   private getConfig() {
     return {
-      baseURL: "http://192.168.1.12:8090/api/v1",
+      baseURL: "http://localhost:8080/api/v1",
       headers: {
         // ContentType: "application/json",
         // // ContentType: 'multipart/form-data',

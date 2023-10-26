@@ -9,6 +9,7 @@ export const requestLogin = createAsyncThunk(
   "auth/login",
   async (input: ILoginData, thunkAPI) => {
     const response = await authApi.login(input);
+      console.log(response)
     if (!response.success)
       throw { message: response.message, errorCode: response.errorCode };
     return response.data;
@@ -47,7 +48,7 @@ const authSlice = createSlice({
     builder
       .addCase(requestLogin.fulfilled, (state, action) => {
         if (action.payload == null) return;
-        // const { accessToken, ...rest } = action.payload;
+        const { accessToken, ...rest } = action.payload;
         // state.currentUser = rest;
         // state.accessToken = accessToken;
       })

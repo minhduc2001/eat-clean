@@ -9,6 +9,7 @@ function Header() {
     const location = useLocation()
     console.log(location.pathname)
 
+    const isLogin = localStorage.getItem("user")
 
     return (
         <div className="header">
@@ -44,14 +45,17 @@ function Header() {
                             </a>
                         </li>
                         <li>
-                            <a href={"/login"} className={"hidden"}>
-                                Đăng nhập
-                            </a>
-                            <a href={"/cart"}>
-                                <Badge count={10}>
-                                    <ShoppingBagOutlinedIcon />
-                                </Badge>
-                            </a>
+                            {
+                                !isLogin ?
+                                <a href={"/login"} >
+                                    Đăng nhập
+                                </a> :
+                                <a href={"/cart"}>
+                                    <Badge count={10}>
+                                        <ShoppingBagOutlinedIcon />
+                                    </Badge>
+                                </a>
+                            }
                         </li>
                     </ul>
                 </div>

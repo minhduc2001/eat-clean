@@ -2,6 +2,7 @@ import React from "react";
 import "./index.scss"
 import ProductCard from "@/components/product";
 import { Pagination } from 'antd';
+import { GoSearch } from "react-icons/go";
 function ProductsPage() {
     return (
         <div className={"flex flex-col justify-center items-center bg-zinc-100"}>
@@ -13,9 +14,9 @@ function ProductsPage() {
             <div className={"w-3/4 p-5 bg-white mt-5 font-sans"}>
                 <div className={"filter flex bg"}>
                     <label><span> Sắp xếp :</span></label>
-                    <ul className={"ul_col ml-1 mb-0 w-4/5"}>
-                        <li>
-                            <ul className={"flex w-full justify-around pe-100"}>
+                    <ul className={"ul_col ml-1 mb-0 w-11/12 flex justify-between"}>
+                        <li className={'w-4/5 flex relative'}>
+                            <ul className={"flex w-full justify-around pe-100 "}>
                                 <li>
                                     <a className={"filter-content"}>Tên A -> Z</a>
                                 </li>
@@ -34,10 +35,15 @@ function ProductsPage() {
                                 <li>
                                     <a className={"filter-content"}>Mua nhiều nhất</a>
                                 </li>
-                                <li>
-                                    <a className={"filter-content"}>Yêu thích</a>
-                                </li>
                             </ul>
+                        </li>
+                        <li className={''}>
+                            <div className={'flex h-full items-center relative'}>
+                                <input className={'border rounded-2xl p-1 pl-4 text-xs'} value={''} />
+                                <div className={'absolute right-2 text-xs'}>
+                                    <GoSearch />
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>

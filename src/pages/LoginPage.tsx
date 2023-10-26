@@ -5,6 +5,8 @@ import Helmet from "@/components/Helmet";
 import { useAppDispatch } from "@/redux/hooks";
 import { requestLogin, requestRegister } from "@/redux/features/authSlice";
 import BackDropLoading from "@/components/BackDropLoading";
+import {Form, Input} from "antd";
+import {Divider, Typography} from "@mui/material";
 
 interface Account {
   email: string;
@@ -74,14 +76,15 @@ function LoginPage() {
       .unwrap()
       .then((data) => {
         setLoading(false);
+        console.log(data?.accessToken)
       })
       .catch((e) => {
         setLoading(false);
       });
   };
 
-  const handleSubmitRegister = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmitRegister = (e: any) => {
+    console.log(e)
     setLoading(true);
 
     dispatch(requestRegister({ email: email }))
@@ -154,7 +157,7 @@ function LoginPage() {
                   className="absolute right-3 top-2 cursor-pointer"
                   onClick={togglePasswordVisibility}
                 >
-                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  {!showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </span>
               </div>
             </div>
@@ -164,7 +167,7 @@ function LoginPage() {
             <div className="mb-4 flex items-center">
               <button
                 type="submit"
-                className="w-20 bg-green-500 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm"
+                className="w-20 bg-green-700 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm"
               >
                 Login
               </button>
@@ -180,58 +183,71 @@ function LoginPage() {
                 Remember me
               </label>
             </div>
-            <div className="text-green-500">
-              <a href="#">Lost your password?</a>
+            <div className="text-green-700">
+              <a href="#">Forgot your password?</a>
             </div>
           </form>
 
-          <form
-            action="#"
+          <Form
             className="w-1/2 bg-white p-8 rounded-lg shadow-lg"
-            onSubmit={handleSubmitRegister}
+            onFinish={handleSubmitRegister}
           >
             <h1 className="text-2xl font-semibold mb-4">Register</h1>
-            <div className="border-b mb-4"></div>
-            <div className="mb-4 flex w-full items-center">
-              <label
-                htmlFor="email"
-                className="text-gray-600 block w-[50%] pr-2 text-sm"
+            <Divider />
+            <div className={'w-full mt-6 flex justify-between'}>
+              <label className={'mt-2.5 text-gray-600'}>{"Email Address".toUpperCase()}</label>
+              <Form.Item
+                  name="email"
+                  className={'w-9/12 max-h-4'}
+                  rules={[{ required: true, message: 'Please input your email!' }]}
               >
-                {"Email Address".toUpperCase()}
-              </label>
-              <input
-                type="email"
-                id="emali"
-                name="email"
-                className="w-full p-2 border-none border-gray-300 rounded focus:outline-none text-sm"
-                placeholder="Enter your username or email"
-                required
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
-              />
+                <Input allowClear className={"p-2"} bordered={false} placeholder={"Enter your email"} />
+              </Form.Item>
             </div>
+            <Divider />
+            <div className={'w-full mt-6 flex justify-between'}>
+              <label className={'mt-2.5 text-gray-600'}>{"username".toUpperCase()}</label>
+              <Form.Item
+                  name="username"
+                  className={'w-9/12 max-h-4'}
+                  rules={[{ required: true, message: 'Please input your username!' }]}
+              >
+                <Input allowClear className={"p-2"} bordered={false} placeholder={"Enter your username"} />
+              </Form.Item>
+            </div>
+            <Divider />
+            <div className={'w-full mt-6 flex justify-between'}>
+              <label className={'mt-2.5 text-gray-600'}>{"password".toUpperCase()}</label>
+              <Form.Item
+                  name="password"
+                  className={'w-9/12 max-h-4'}
+                  rules={[{ required: true, message: 'Please input your password!' }]}
+              >
+                <Input.Password allowClear className={"p-2"} bordered={false} placeholder={"Enter your password"} />
+              </Form.Item>
+            </div>
+            <Divider />
+            <div className={'w-full mt-6 flex justify-between'}>
+              <label className={'mt-2.5 text-gray-600'}>{"Phone".toUpperCase()}</label>
+              <Form.Item
+                  name="phone"
+                  className={'w-9/12 max-h-4'}
+                  rules={[{ required: true, message: 'Please input your phone!' }]}
+              >
+                <Input allowClear className={"p-2"} bordered={false} placeholder={"Enter your phone"} />
+              </Form.Item>
+            </div>
+            <Divider />
 
-            <div className="border-b mb-4"></div>
-            <div className="text-gray-600 mb-4">
-              A link to set a new password will be sent to your email address.
-            </div>
-
-            <div className="mb-4 flex items-center">
-              <input type="checkbox" id="newsletter" className="mr-2" />
-              <label htmlFor="newsletter" className="text-gray-600">
-                Sign me up for the newsletter!
-              </label>
-            </div>
-            <div className="text-green-500">
+            <div className="text-green-700 mt-3">
               <button
                 type="submit"
-                className="w-20 bg-green-500 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm"
+                className="w-20 bg-green-700 text-white py-2 mr-4 rounded hover:bg-green-600 transition duration-300 text-sm"
               >
                 Register
               </button>
             </div>
-          </form>
+          </Form>
         </div>
       </div>
       <BackDropLoading loading={loading}></BackDropLoading>
