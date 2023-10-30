@@ -1,4 +1,4 @@
-import { ILoginData, IRegisterData, IToken, IUser } from "@/interfaces";
+import {ILoginData, IRegisterData, IToken, IUser, Wrapper} from "@/interfaces";
 import Api from "./api";
 
 class AuthApi {
@@ -9,8 +9,8 @@ class AuthApi {
 
   async login(
     loginInfomation: ILoginData
-  ): Promise<ApiResponse<IUser & IToken>> {
-    return Api.POST<ApiResponse<IUser & IToken>>(
+  ): Promise<ApiResponse<string>> {
+    return Api.POST<ApiResponse<string>>(
       this.baseUrl + "/login",
       // @ts-ignore
       new URLSearchParams(loginInfomation)

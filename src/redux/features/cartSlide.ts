@@ -1,70 +1,62 @@
-import { toastOption } from "@/configs/notification.config";
-import { LoadingStatus } from "@/enums/enum";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+import {toastOption} from "@/configs/notification.config";
+import {LoadingStatus} from "@/enums/enum";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {toast} from "react-toastify";
+import {IProduct} from "@/interfaces/product.interface.ts";
+import productApi from "@/api/productApi.ts";
 
-export const addItem = createAsyncThunk(
-  "cart/add",
-  async (input: CartItem, thunkAPI) => {
-    const cart = (thunkAPI.getState() as CartState).cart;
-    cart.unshift(input);
 
-    return cart;
-  }
+export const orderProduct = createAsyncThunk(
+    "cart/order",
+    async (input: IProduct, thunkAPI) => {
+        const response = await productApi.orderProduct(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
 );
 
-export const deleteItem = createAsyncThunk(
-  "cart/delete",
-  async (input: CartItem, thunkAPI) => {
-    const cart = (thunkAPI.getState() as CartState).cart;
-    const newCart = cart.filter(
-      (cartItem: CartItem) => cartItem.id !== input.id
-    );
 
-    return newCart;
-  }
+export const countCart = createAsyncThunk(
+    "cart/count",
+    async (thunkAPI) => {
+        const response = await productApi.countCart()
+        console.log(response)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
 );
-
-export const updateItem = createAsyncThunk(
-  "cart/update",
-  async (input: CartItem[], thunkAPI) => {}
-);
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: string;
-  quantity: number;
-}
 
 export interface CartState {
-  cart: CartItem[];
-  error: ErrorResponse | null;
-  loading: LoadingStatus;
+    totalOrder: number;
+    error: ErrorResponse | null;
+    loading: LoadingStatus | null;
+    isFirst: boolean;
 }
 
 const initialState: CartState = {
-  cart: [],
-  error: null,
-  loading: LoadingStatus.Pedding,
+    totalOrder: 0,
+    error: null,
+    loading: null,
+    isFirst: true
 };
 
-const authSlice = createSlice({
+const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(addItem.fulfilled, (state, action) => {
-        state.cart = action.payload;
+      .addCase(orderProduct.fulfilled, (state, action) => {
+        state.totalOrder += action.payload ? 1 : 0
       })
-      .addCase(addItem.fulfilled, (state, action) => {
-        state.cart = action.payload;
-      })
+        .addCase(countCart.fulfilled, (state, action) => {
+            state.totalOrder = action.payload ?? 0
+        })
       .addMatcher(
         (action) => action.type.includes("rejected"),
         (state, action) => {
-          console.log(action);
 
           state.error = {
             message: action.payload?.message ?? action.error.message,
@@ -82,10 +74,16 @@ const authSlice = createSlice({
           state.loading = LoadingStatus.Fulfilled;
         }
       )
+        .addMatcher(
+            (action) => action.type.includes("pending"),
+            (state, action) => {
+                state.loading = LoadingStatus.Pending
+            }
+        )
       .addDefaultCase((state, action) => {
         // console.log(`action type: ${action.type}`, current(state));
       });
   },
 });
-export default authSlice.reducer;
+export default cartSlice.reducer;
 

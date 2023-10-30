@@ -36,3 +36,5 @@ export interface IForgetPassword {
 export interface IOTP {
   otp: number;
 }
+
+

@@ -7,6 +7,7 @@ import { requestLogin, requestRegister } from "@/redux/features/authSlice";
 import BackDropLoading from "@/components/BackDropLoading";
 import {Form, Input} from "antd";
 import {Divider, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 interface Account {
   email: string;
@@ -24,6 +25,7 @@ function LoginPage() {
   const [email, setEmail] = useState<string>("");
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate()
 
   useEffect(() => {
     const check = JSON.parse(localStorage.getItem("remember") ?? "{}");
@@ -76,7 +78,7 @@ function LoginPage() {
       .unwrap()
       .then((data) => {
         setLoading(false);
-        console.log(data?.accessToken)
+        navigate("/", {state: true})
       })
       .catch((e) => {
         setLoading(false);

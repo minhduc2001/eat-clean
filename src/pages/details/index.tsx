@@ -1,14 +1,41 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./index.scss"
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "@/components/product";
 import { BsFillBookmarkFill } from 'react-icons/bs';
-import { BsBookmark } from 'react-icons/bs';
 import {Button, Rating, TextField} from "@mui/material";
 import CommentCard from "@/components/comment";
+import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
+import {useLocation} from "react-router-dom";
+import {getProductById} from "@/redux/features/productSlice.ts";
+import {RootState} from "@/redux/store.ts";
+import {orderProduct} from "@/redux/features/cartSlide.ts";
+import BackDropLoading from "@/components/BackDropLoading.tsx";
+import {LoadingStatus} from "@/enums/enum.ts";
 function ProductDetailPage() {
+    const location = useLocation();
+    const dispatch = useAppDispatch()
+    const [quantity, setQuantity] = useState(1)
+    const [loading, setLoading] = useState(false)
+    const  id = Number(location.pathname.substring(location.pathname.lastIndexOf('/') + 1))
+
+    useEffect(() => {
+        dispatch(getProductById(id))
+    }, [])
+
+    const product = useAppSelector((root: RootState) => root.product.product)
+
+    const handleChange = (isAsc: boolean) => {
+        setQuantity(isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1)
+    }
+
+    const handleOrder = () => {
+        setLoading(true)
+        dispatch(orderProduct({...product, orderCount: quantity})).then(() => setLoading(false))
+    }
+
     return (
         <div className={"flex flex-col justify-center items-center bg-gray-50"}>
             <div style={{fontSize: "20pt", marginTop: "30px"}}>
@@ -95,14 +122,14 @@ function ProductDetailPage() {
                                             <label>Số lượng:</label>
                                             <fieldset>
                                                 <div className="flex mt-2">
-                                                    <button className={"p-2 ps-5 pe-5 border rounded"} type="button">-</button>
-                                                    <input type="number" className={"border text-center w-1/5"} value="1" />
-                                                    <button className={"p-2 ps-5 pe-5 border rounded"} type="button">+</button>
+                                                    <button className={"p-2 ps-5 pe-5 border rounded"} onClick={() => handleChange(false)} type="button">-</button>
+                                                    <input type="number" className={"border text-center w-1/5"} readOnly={true}  value={quantity} />
+                                                    <button className={"p-2 ps-5 pe-5 border rounded"} onClick={() =>handleChange(true)} type="button">+</button>
                                                 </div>
                                             </fieldset>
                                         </div>
                                         <div className="button_actions mt-5 flex flex-col items-start">
-                                            <button type="submit" className="bg-[#ff5722] text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
+                                            <button onClick={handleOrder} type="submit" className="bg-[#ff5722] text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
                                                 <span className="text_1">Thêm vào giỏ hàng</span>
                                             </button>
                                             <button type="submit"className="text-[#0b850b] border-[#0b850b] border min-w-[303px] mt-2
@@ -227,8 +254,9 @@ function ProductDetailPage() {
                     <CommentCard />
                     <CommentCard />
                 </div>
-
             </div>
+
+            <BackDropLoading loading={loading}></BackDropLoading>
         </div>
     );
 }

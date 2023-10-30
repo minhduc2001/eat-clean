@@ -1,16 +1,22 @@
 import { formatCurrency, roundDownToNearestThousand } from "@/utils/convert.tsx";
 import "./index.scss";
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import {Badge} from "antd";
+import {useAppSelector} from "@/redux/hooks.ts";
+import {RootState} from "@/redux/store.ts";
+import AsyncWrapper from "@/layouts/AsyncWrapper.tsx";
+import {LoadingStatus} from "@/enums/enum.ts";
 function Header() {
 
     const location = useLocation()
     console.log(location.pathname)
 
-    const isLogin = localStorage.getItem("user")
+    const isLogin = localStorage.getItem("token")
 
+    const totalOrder = useAppSelector((root: RootState) => root.cart.totalOrder)
+    console.log(totalOrder)
     return (
         <div className="header">
             <div className={"container"}>
@@ -20,41 +26,46 @@ function Header() {
                 <div className="nav">
                     <ul>
                         <li>
-                            <a href="/">
+                            <Link to="/">
                                 <HomeRoundedIcon style={{color: "#0b850b", fontSize: 30}} />
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href={"/introduce"}>
+                            <Link to={"/introduce"}>
                                 Giới thiệu
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href={"/product"}>
+                            <Link to={"/product"}>
                                 Sản phẩm
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href={"/tool"}>
+                            <Link to={"/tool"}>
                                 Công cụ
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href={"/blog"}>
+                            <Link to={"/blog"}>
                                 Blog
-                            </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={"/blog"}>
+                                Yêu thích
+                            </Link>
                         </li>
                         <li>
                             {
                                 !isLogin ?
-                                <a href={"/login"} >
+                                <Link to={"/login"} >
                                     Đăng nhập
-                                </a> :
-                                <a href={"/cart"}>
-                                    <Badge count={10}>
+                                </Link> :
+                                <Link to={"/cart"}>
+                                    <Badge count={totalOrder ?? 1}>
                                         <ShoppingBagOutlinedIcon />
                                     </Badge>
-                                </a>
+                                </Link>
                             }
                         </li>
                     </ul>

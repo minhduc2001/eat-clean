@@ -1,5 +1,5 @@
 export enum LoadingStatus {
-  Pedding = "pendding",
+  Pending = "pending",
   Fulfilled = "fulfilled",
   Rejected = "rejected",
 }

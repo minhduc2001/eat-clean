@@ -1,15 +1,29 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./index.scss"
 import Cart from "@/components/cart";
 import {Divider} from "@mui/material";
+import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
+import {RootState} from "@/redux/store.ts";
+import {getCart} from "@/redux/features/productSlice.ts";
+import {formatCurrency} from "@/utils/convert.tsx";
 
-interface CartPageProps {
-    time: string;
-    title: string;
-    image: string;
-}
+function CartPage() {
 
-function CartPage(props: CartPageProps) {
+    const dispatch = useAppDispatch();
+    const cart = useAppSelector((root: RootState) => root.product.cart)
+
+    const totalCost = cart ? cart.reduce((total, item) => {
+        const itemCost = (item.foods.price ? item.foods.price : 0) * item.quantity;
+        console.log(itemCost)
+        return total + itemCost;
+    }, 0) : 0;
+
+    console.log(totalCost)
+
+    useEffect(() => {
+        dispatch(getCart())
+    },[])
+
     return (
         <div className={"flex justify-center flex-col items-center"}>
             <div style={{fontSize: "20pt", marginTop: "30px"}}>
@@ -19,9 +33,16 @@ function CartPage(props: CartPageProps) {
             </div>
             <div className={"flex w-9/12 flex-row container-content"}>
                 <div className={"list-carts"}>
-                    <Cart time={""} title={""} image={""} />
-                    <div className={"w-full pl-3 pr-3"}><Divider /></div>
-                    <Cart time={""} title={""} image={""} />
+                    {
+                        cart ? cart.map(it => {
+                            return (
+                                <>
+                                    <Cart cart={it} key={it.id} />
+                                    <div className={"w-full pl-3 pr-3"}><Divider /></div>
+                                </>
+                            )
+                        }) : <div></div>
+                    }
                 </div>
                 <div className={"w-5/12"}>
                     <div className="w-full p-5">
@@ -32,7 +53,7 @@ function CartPage(props: CartPageProps) {
 
                         <div className="title-cart mt-4 flex w-11/12 justify-between">
                             <h3 className="text-xs-left">Tổng tiền</h3>
-                            <span className="font-bold text-gray-700">2.400.000₫</span>
+                            <span className="font-bold text-gray-700">{formatCurrency(totalCost)}</span>
                         </div>
                         <div className="checkout mt-5 p-2">
                             <a href={"/order"} type="submit" className="bg-[#ff5722] w-full text-white text-center cursor-pointer text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">

@@ -37,7 +37,7 @@ const initialState: AuthState = {
   currentUser: null,
   accessToken: "",
   error: null,
-  loading: LoadingStatus.Pedding,
+  loading: LoadingStatus.Pending
 };
 
 const authSlice = createSlice({
@@ -48,9 +48,9 @@ const authSlice = createSlice({
     builder
       .addCase(requestLogin.fulfilled, (state, action) => {
         if (action.payload == null) return;
-        const { accessToken, ...rest } = action.payload;
         // state.currentUser = rest;
-        // state.accessToken = accessToken;
+        state.accessToken = action.payload;
+        localStorage.setItem("token", action.payload)
       })
       .addMatcher(
         (action) => action.type.includes("rejected"),

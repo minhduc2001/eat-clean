@@ -12,6 +12,8 @@ import BlogCard from "@/components/blog";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
 import {getProductByPage} from "@/redux/features/productSlice.ts";
 import {RootState} from "@/redux/store.ts";
+import {useLocation} from "react-router-dom";
+import {countCart} from "@/redux/features/cartSlide.ts";
 
 
 function HomePage() {
@@ -24,14 +26,18 @@ function HomePage() {
     className: "slider center"
   };
 
+  const location = useLocation();
   const dispatch = useAppDispatch()
+
+
 
   useEffect(() => {
     dispatch(getProductByPage({page: 0, limit: 10}))
+    dispatch(countCart())
   }, [])
 
   const products = useAppSelector((root: RootState) => root.product.products)
-
+  console.log(products)
   return (
     <>
       <Helmet title="Home" description="home page" />
@@ -125,16 +131,17 @@ function HomePage() {
           <h2>
             Sản phẩm ăn giảm can
           </h2>
-          <Slider {...settings}>
-            <ProductCard title={""} image={""} />
-            <ProductCard title={""} image={""} />
-            <ProductCard title={""} image={""} />
-            <ProductCard title={""} image={""} />
-            <ProductCard title={""} image={""} />
-            <ProductCard title={""} image={""} />
-            <ProductCard title={""} image={""} />
-            <ProductCard title={""} image={""} />
-          </Slider>
+          {
+              products ?
+              <Slider {...settings}>
+                {
+                  products.map(it =>
+                      <ProductCard product={it} key={it.id} />
+                  )
+                }
+              </Slider> : <></>
+          }
+
         </div>
 
         <div className={"wrap-baseline"}>

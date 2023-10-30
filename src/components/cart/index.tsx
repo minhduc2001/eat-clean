@@ -1,13 +1,18 @@
-import React from "react";
+import React, {useState} from "react";
 import "./index.scss"
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-interface CartProps {
-    time: string;
-    title: string;
-    image: string;
-}
+import {orderProduct} from "@/redux/features/cartSlide.ts";
+import {useAppDispatch} from "@/redux/hooks.ts";
 
-function Cart(props: CartProps) {
+function Cart(props: any) {
+    const [quantity, setQuantity] = useState(props.cart.quantity)
+    const [loading, setLoading] = useState(false)
+    const dispatch = useAppDispatch()
+    const handleOrder = (isAsc: boolean) => {
+        setQuantity(isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1)
+        setLoading(true)
+        dispatch(orderProduct({...props.cart.foods, orderCount: isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1})).then(() => setLoading(false))
+    }
     return (
         <div className={"cart-container h-[120px] w-full flex items-center"}>
             <div className="flex h-full items-center">
@@ -37,9 +42,9 @@ function Cart(props: CartProps) {
                         <div className="txt_center">
                             <input className="variantID" type="hidden" name="variantId" value="49" />
                             <div className="flex ml-5">
-                                <button className={"pl-3 pr-3 border rounded"} type="button">-</button>
-                                <input type="number" className={"border text-right w-1/5 p-1 text-sm"} value="1" />
-                                <button className={"ps-3 pe-3 border rounded p-1"} type="button">+</button>
+                                <button className={"pl-3 pr-3 border rounded"} type="button" onClick={() => handleOrder(false)}>-</button>
+                                <input type="number" className={"border text-right w-1/5 p-1 text-sm"} value={quantity} />
+                                <button className={"ps-3 pe-3 border rounded p-1"} type="button" onClick={() => handleOrder(true)}>+</button>
                             </div>
                         </div>
                     </div>

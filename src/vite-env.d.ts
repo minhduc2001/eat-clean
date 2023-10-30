@@ -23,8 +23,8 @@ interface ApiListResponse<T> {
 }
 
 interface  IMetadata {
-  pageNumber: number;
-  pageSize: number;
+  pageNumber?: number;
+  pageSize?: number;
   totalPages: number;
   currentPage?: number;
 }
@@ -64,4 +64,6 @@ interface Query {
   page?: number;
   search?: string;
   filter?: string;
+  sort?: string;
+  label?: string;
 }

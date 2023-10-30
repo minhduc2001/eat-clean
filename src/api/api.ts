@@ -14,9 +14,7 @@ class Api {
     instance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
         if (localStorage.getItem("token")) {
-          config.headers["Authorization"] = `Bearer ${JSON.parse(
-            localStorage.getItem("token") ?? ""
-          )}`;
+          config.headers["Authorization"] = `Bearer ${localStorage.getItem("token") ?? ""}`;
         }
         return config;
       },
