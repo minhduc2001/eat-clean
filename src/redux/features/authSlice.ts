@@ -18,7 +18,7 @@ export const requestLogin = createAsyncThunk(
 
 export const requestRegister = createAsyncThunk(
   "auth/register",
-  async (input: IRegisterData, thunkAPI) => {
+  async (input: any, thunkAPI) => {
     const response = await authApi.register(input);
     if (!response.success)
       throw { message: response.message, errorCode: response.errorCode };

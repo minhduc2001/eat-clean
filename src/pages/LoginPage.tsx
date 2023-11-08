@@ -8,6 +8,7 @@ import BackDropLoading from "@/components/BackDropLoading";
 import {Form, Input} from "antd";
 import {Divider, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 interface Account {
   email: string;
@@ -89,10 +90,11 @@ function LoginPage() {
     console.log(e)
     setLoading(true);
 
-    dispatch(requestRegister({ email: email }))
+    dispatch(requestRegister(e))
       .unwrap()
       .then((data) => {
         setLoading(false);
+        toast.success("Đăng kí thành công")
       })
       .catch((e) => setLoading(false));
   };
@@ -210,7 +212,7 @@ function LoginPage() {
             <div className={'w-full mt-6 flex justify-between'}>
               <label className={'mt-2.5 text-gray-600'}>{"username".toUpperCase()}</label>
               <Form.Item
-                  name="username"
+                  name="name"
                   className={'w-9/12 max-h-4'}
                   rules={[{ required: true, message: 'Please input your username!' }]}
               >
