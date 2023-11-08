@@ -7,16 +7,17 @@ interface CommentCardProps {
     image: string;
 }
 
-function CommentCard() {
+function CommentCard(props: any) {
+    console.log(props)
     return (
         <div className={"flex p-1 mt-[50px]"}>
             <div className={'w-1/12 flex justify-center'}>
-                <Avatar {...stringAvatar('Kent Dodds')} />
+                <Avatar {...stringAvatar(props?.data?.user?.username || "user name")} />
             </div>
             <div className={"w-full"}>
-                <p>Kent Dodds</p>
-                <Rating value={4}/>
-                <p className={'text-xs'}>Hàng y hình, đẹp shop tư vấn nhiệt tình, giao hàng nhanh gọn lẹ, sẽ ủng hộ sốp, đẹp mà rẻ ạ, mong sốp ra nhiều thêm mẫu đẹp nữa nhé</p>
+                <p>{props?.data?.user?.username || "user name"}</p>
+                <Rating value={props?.data?.rate || 5}/>
+                <p className={'text-xs'}>{props?.data?.comment}</p>
             </div>
         </div>
     );
@@ -47,7 +48,7 @@ function stringAvatar(name: string) {
         sx: {
             bgcolor: stringToColor(name),
         },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+        children: `${name.substring(0,2)}`,
     };
 }
 

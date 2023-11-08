@@ -3,15 +3,17 @@ import "./index.scss";
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import {Link, useLocation} from "react-router-dom";
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {Badge} from "antd";
 import {useAppSelector} from "@/redux/hooks.ts";
 import {RootState} from "@/redux/store.ts";
 import AsyncWrapper from "@/layouts/AsyncWrapper.tsx";
 import {LoadingStatus} from "@/enums/enum.ts";
+import {Button} from "@mui/material";
 function Header() {
 
-    const location = useLocation()
-    console.log(location.pathname)
+    const mLocation = useLocation()
+    console.log(mLocation.pathname)
 
     const isLogin = localStorage.getItem("token")
 
@@ -21,7 +23,7 @@ function Header() {
         <div className="header">
             <div className={"container"}>
                 <div className="logo-header">
-                    <img src="https://healthyeating.shop/wp-content/uploads/2020/12/LOGO-healthy-TRUNG-HIEU-01.png" />
+                    <img src="logo.png" />
                 </div>
                 <div className="nav">
                     <ul>
@@ -68,11 +70,23 @@ function Header() {
                                 </Link>
                             }
                         </li>
+                        <li>
+                            {
+                                !isLogin ?
+                                    <></> :
+                                    <Button onClick={() => {
+                                        localStorage.clear()
+                                        location.reload()
+                                    }}>
+                                       <LogoutIcon />
+                                    </Button>
+                            }
+                        </li>
                     </ul>
                 </div>
             </div>
             {
-                location.pathname.length > 1 ?
+                mLocation.pathname.length > 1 ?
                         <div className={"bread-crumb"}>
                             <p>Trang chủ / Sản phẩm</p>
                         </div>

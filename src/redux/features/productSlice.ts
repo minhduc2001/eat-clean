@@ -1,7 +1,7 @@
 import authApi from "@/api/authApi";
 import { toastOption } from "@/configs/notification.config";
 import { LoadingStatus } from "@/enums/enum";
-import { ILoginData, IRegisterData, IUser } from "@/interfaces";
+import {IBlog, IComment, ILoginData, IRegisterData, IUser} from "@/interfaces";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import {ICart, ICategory, IProduct} from "@/interfaces/product.interface.ts";
@@ -18,10 +18,30 @@ export const getProductByPage = createAsyncThunk(
     }
 );
 
+export const getBlogByPage = createAsyncThunk(
+    "products/blog",
+    async (input: Query, thunkAPI) => {
+        const response = await productApi.getBlogs(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
+
 export const getProductById = createAsyncThunk(
     "get",
     async (input: number, thunkAPI) => {
         const response = await productApi.getOne(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
+
+export const getBlogById = createAsyncThunk(
+    "get-blog",
+    async (input: number, thunkAPI) => {
+        const response = await productApi.getBlogOne(input)
         if (!response.success)
             throw { message: response.message, errorCode: response.errorCode };
         return response.data;
@@ -60,12 +80,32 @@ export const getCart = createAsyncThunk(
     }
 );
 
+export const updateCartWithoutApi = createAsyncThunk(
+    "products/update-cart",
+    async (input: IProduct, thunkAPI) => {
+        return input
+    }
+);
+
+export const comment = createAsyncThunk(
+    "cart/comment",
+    async (input: IComment, thunkAPI) => {
+        const response = await productApi.comment(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
+
 
 
 export interface ProductState {
     products: IProduct[] | null;
     product: IProduct | null;
+    comments: IComment[] | null;
     categories: ICategory[] | null;
+    blogs: IBlog[] | null;
+    blog: IBlog | null;
     cart: ICart[] | null;
     error: ErrorResponse | null;
     loading: LoadingStatus;
@@ -76,10 +116,12 @@ const initialState: ProductState = {
     products: null,
     product: null,
     categories: null,
+    blogs: null,
+    blog: null,
     cart: null,
     error: null,
     loading: LoadingStatus.Pending,
-    metadata: {totalPages: 1},
+    metadata: {totalPages: 1}
 };
 
 const productSlice = createSlice({
@@ -91,6 +133,11 @@ const productSlice = createSlice({
             .addCase(getProductByPage.fulfilled, (state, action) => {
                 if (action.payload == null) return;
                 state.products = action.payload.results;
+                state.metadata = action.payload.metadata
+            })
+            .addCase(getBlogByPage.fulfilled, (state, action) => {
+                if (action.payload == null) return;
+                state.blogs = action.payload.results;
                 state.metadata = action.payload.metadata
             })
             .addCase(getProductWithFilter.fulfilled, (state, action) => {
@@ -105,10 +152,31 @@ const productSlice = createSlice({
             .addCase(getProductById.fulfilled, (state, action) => {
                 if (action.payload == null) return;
                 state.product = action.payload;
+                state.comments = action.payload.comments;
+            })
+            .addCase(getBlogById.fulfilled, (state, action) => {
+                if (action.payload == null) return;
+                state.blog = action.payload;
             })
             .addCase(getCart.fulfilled, (state, action) => {
                 if (action.payload == null) return;
                 state.cart = action.payload;
+            })
+            .addCase(comment.fulfilled, (state, action) => {
+                if (action.payload == null) return;
+                state.comments =[...state.comments, action.payload]
+            })
+            .addCase(updateCartWithoutApi.fulfilled, (state, action) => {
+                if (action.payload == null) return;
+                // state.cart.findIndex()
+                console.log(action.payload, "======")
+                state.cart = state.cart?.map(it => {
+                    if (it.id == action.payload.id) {
+                        it.quantity = action.payload.quantity;
+                    }
+
+                    return it;
+                })
             })
             .addMatcher(
                 (action) => action.type.includes("rejected"),
@@ -120,10 +188,10 @@ const productSlice = createSlice({
                         errorCode: action.payload?.errorCode ?? action.error.code,
                     };
                     state.loading = LoadingStatus.Rejected;
-                    state.products = []
+                    // state.products = []
                     state.metadata = null
 
-                    toast.error(state.error.message, toastOption);
+                    // toast.error(state.error.message, toastOption);
                 }
             )
             .addMatcher(

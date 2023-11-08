@@ -1,8 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import "./index.scss"
-import { Input } from 'antd';
+import {Form, Input} from 'antd';
 import {Button} from "@mui/material";
 function ToolPage() {
+    const [bmi, setBmi] = useState(0)
+    const handleSubmit = (e) => {
+        const data = Number(e.weight) / (e.height * e.height)
+        setBmi(data.toFixed(2))
+    }
+
     return (
         <div className={"flex flex-col justify-center items-center"}>
             <div style={{fontSize: "20pt", marginTop: "30px"}}>
@@ -11,25 +17,39 @@ function ToolPage() {
                 </h2>
             </div>
             <div className={"form w-9/12 bg-gray-200 rounded p-5 mt-10 mb-10 flex flex-col items-center"}>
-                <div className={"flex w-full justify-between items-center"}>
-                    <p>
-                        Chiều cao
-                    </p>
-                    <Input placeholder={"Nhập chiều cao tính bằng cm"} className={"w-10/12 p-3"} />
-                </div>
-                <div className={"flex w-full mt-5 justify-between items-center"}>
-                    <p>
-                        Cân nặng
-                    </p>
-                    <Input placeholder={"Nhập cân nặng tính bằng Kg"} className={"w-10/12 p-3"} />
-                </div>
-                <div className={"flex w-full mt-5 justify-between items-center mb-10"}>
-                    <p>
-                        Kết quả tính
-                    </p>
-                    <p className={"text-start w-10/12"}>22.2</p>
-                </div>
-                <Button variant="contained" color={'success'}>Tính BMI</Button>
+                <Form className={'w-full'} onFinish={handleSubmit}>
+                    <div className={"flex w-full justify-between items-center"}>
+                        <p>
+                            Chiều cao
+                        </p>
+                        <Form.Item
+                            name={"height"}
+                            className={'w-10/12'}
+                            rules={[{ required: true, message: 'Please input your height!' }]}
+                        >
+                            <Input placeholder={"Nhập chiều cao tính bằng m"} className={"w-full p-3  mt-5"} />
+                        </Form.Item>
+                    </div>
+                    <div className={"flex w-full justify-between items-center"}>
+                        <p>
+                            Cân nặng
+                        </p>
+                        <Form.Item
+                            name={"weight"}
+                            className={'w-10/12'}
+                            rules={[{ required: true, message: 'Please input your weight!' }]}
+                        >
+                            <Input placeholder={"Nhập cân nặng tính bằng kg"} className={"w-full p-3 mt-5"} />
+                        </Form.Item>
+                    </div>
+                    <div className={"flex w-full mt-5 justify-between items-center mb-10"}>
+                        <p>
+                            Kết quả tính
+                        </p>
+                        <p className={"text-start w-10/12"}>{bmi}</p>
+                    </div>
+                    <Button variant="contained" type={'submit'} color={'success'}>Tính BMI</Button>
+                </Form>
             </div>
             <div className={"w-9/12"}>
                 <img src={"https://healthyeating.shop/wp-content/uploads/2021/03/che-do-an-giam-can-1.png"} />

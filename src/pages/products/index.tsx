@@ -109,7 +109,7 @@ function ProductsPage() {
             limit: 12,
             filter: filter,
             sort: sort,
-            search: "",
+            search: search,
             label: current
         }))
     }

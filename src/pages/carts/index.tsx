@@ -6,6 +6,7 @@ import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
 import {RootState} from "@/redux/store.ts";
 import {getCart} from "@/redux/features/productSlice.ts";
 import {formatCurrency} from "@/utils/convert.tsx";
+import {Link, useNavigate} from "react-router-dom";
 
 function CartPage() {
 
@@ -13,10 +14,12 @@ function CartPage() {
     const cart = useAppSelector((root: RootState) => root.product.cart)
 
     const totalCost = cart ? cart.reduce((total, item) => {
-        const itemCost = (item.foods.price ? item.foods.price : 0) * item.quantity;
+        const itemCost = (item.foods?.price ? item.foods?.price : 0) * item.quantity;
         console.log(itemCost)
         return total + itemCost;
     }, 0) : 0;
+
+    const navigate = useNavigate()
 
     console.log(totalCost)
 
@@ -56,14 +59,16 @@ function CartPage() {
                             <span className="font-bold text-gray-700">{formatCurrency(totalCost)}</span>
                         </div>
                         <div className="checkout mt-5 p-2">
-                            <a href={"/order"} type="submit" className="bg-[#ff5722] w-full text-white text-center cursor-pointer text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
+                            <button onClick={() => {
+                                navigate("/order", {state: {data: cart}})
+                            }} type="submit" className="bg-[#ff5722] w-full text-white text-center cursor-pointer text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
                                 <span className="text_1">Thanh toán</span>
-                            </a>
+                            </button>
                         </div>
                         <div className={"p-2 pt-1"}>
-                            <button type="submit" className="bg-white w-full text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
+                            <Link to={"/"} type="submit" className="bg-white text-center w-full text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
                                 <span className="text-gray-700">Tiếp tục mua sắm</span>
-                            </button>
+                            </Link>
                         </div>
                     </div>
                     <div className="cart-note w-11/12 bg-white mr-5 ml-5">

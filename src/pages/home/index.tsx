@@ -1,5 +1,5 @@
 import Helmet from "@/components/Helmet.tsx";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import AsyncWrapper from "@/layouts/AsyncWrapper.tsx";
 import {Carousel, Image} from "antd";
 import Slider from "react-slick";
@@ -10,7 +10,7 @@ import "./index.scss"
 import ProductCard from "@/components/product";
 import BlogCard from "@/components/blog";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
-import {getProductByPage} from "@/redux/features/productSlice.ts";
+import {getBlogByPage, getProductByPage} from "@/redux/features/productSlice.ts";
 import {RootState} from "@/redux/store.ts";
 import {useLocation} from "react-router-dom";
 import {countCart} from "@/redux/features/cartSlide.ts";
@@ -26,17 +26,18 @@ function HomePage() {
     className: "slider center"
   };
 
-  const location = useLocation();
   const dispatch = useAppDispatch()
-
-
 
   useEffect(() => {
     dispatch(getProductByPage({page: 0, limit: 10}))
-    dispatch(countCart())
+    dispatch(getBlogByPage({page: 0, limit: 9}))
+    if (localStorage.getItem("token")) {
+      dispatch(countCart())
+    }
   }, [])
 
   const products = useAppSelector((root: RootState) => root.product.products)
+  const blogs =  useAppSelector((root: RootState) => root.product.blogs)
   console.log(products)
   return (
     <>
@@ -189,23 +190,23 @@ function HomePage() {
           <h2>
             Tin tức
           </h2>
-          <Slider {...{
-                    dots: true,
-                    infinite: true,
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                    autoplay: true,
-                    speed: 3000,
-                    autoplaySpeed: 5000,
-                    cssEase: "linear",
-                    className: "slider center"
-                  }}>
-            <BlogCard color={"text-white"} title={""} image={""} />
-            <BlogCard color={"text-white"} title={""} image={""} />
-            <BlogCard color={"text-white"} title={""} image={""} />
-            <BlogCard color={"text-white"} title={""} image={""} />
-            <BlogCard color={"text-white"} title={""} image={""} />
-          </Slider>
+          {
+            blogs ? <Slider {...{
+              dots: true,
+              infinite: true,
+              slidesToShow: 3,
+              slidesToScroll: 1,
+              autoplay: true,
+              speed: 1000,
+              autoplaySpeed: 3000,
+              cssEase: "linear",
+              className: "slider center"
+            }}>
+                  {
+                    blogs.map(it => <BlogCard color={'text-white'} key={it.id} data={it} />)
+                  }
+            </Slider> : <></>
+          }
         </div>
         <div id="fb-root"></div>
         <div className="fb-page"

@@ -2,7 +2,7 @@ import {toastOption} from "@/configs/notification.config";
 import {LoadingStatus} from "@/enums/enum";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {toast} from "react-toastify";
-import {IProduct} from "@/interfaces/product.interface.ts";
+import {IBill, ICart, IProduct} from "@/interfaces/product.interface.ts";
 import productApi from "@/api/productApi.ts";
 
 
@@ -10,6 +10,36 @@ export const orderProduct = createAsyncThunk(
     "cart/order",
     async (input: IProduct, thunkAPI) => {
         const response = await productApi.orderProduct(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
+
+export const deleteCart = createAsyncThunk(
+    "cart/delete",
+    async (input: number, thunkAPI) => {
+        const response = await productApi.deleteCart(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
+
+export const paymentProduct = createAsyncThunk(
+    "cart/payment",
+    async (input: IBill, thunkAPI) => {
+        const response = await productApi.paymentProduct(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
+
+export const checkPromotion = createAsyncThunk(
+    "cart/promotion",
+    async (input: string, thunkAPI) => {
+        const response = await productApi.checkPromotion(input)
         if (!response.success)
             throw { message: response.message, errorCode: response.errorCode };
         return response.data;
@@ -27,6 +57,7 @@ export const countCart = createAsyncThunk(
         return response.data;
     }
 );
+
 
 export interface CartState {
     totalOrder: number;
@@ -54,6 +85,12 @@ const cartSlice = createSlice({
         .addCase(countCart.fulfilled, (state, action) => {
             state.totalOrder = action.payload ?? 0
         })
+        .addCase(deleteCart.fulfilled, (state, action) => {
+            state.totalOrder = state.totalOrder - 1
+        })
+        .addCase(paymentProduct.fulfilled, (state, action) => {
+            state.totalOrder = 0
+        })
       .addMatcher(
         (action) => action.type.includes("rejected"),
         (state, action) => {
@@ -64,7 +101,7 @@ const cartSlice = createSlice({
           };
           state.loading = LoadingStatus.Rejected;
 
-          toast.error(state.error.message, toastOption);
+          // toast.error(state.error.message, toastOption);
         }
       )
       .addMatcher(

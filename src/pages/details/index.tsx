@@ -5,35 +5,56 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "@/components/product";
 import { BsFillBookmarkFill } from 'react-icons/bs';
-import {Button, Rating, TextField} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import CommentCard from "@/components/comment";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
 import {useLocation} from "react-router-dom";
-import {getProductById} from "@/redux/features/productSlice.ts";
+import {comment, getProductById, getProductWithFilter} from "@/redux/features/productSlice.ts";
 import {RootState} from "@/redux/store.ts";
 import {orderProduct} from "@/redux/features/cartSlide.ts";
 import BackDropLoading from "@/components/BackDropLoading.tsx";
 import {LoadingStatus} from "@/enums/enum.ts";
+import { AiFillHeart } from "react-icons/ai";
+import {Form, Rate} from "antd";
+import {formatCurrency} from "@/utils/convert.tsx";
+import {toast} from "react-toastify";
 function ProductDetailPage() {
     const location = useLocation();
     const dispatch = useAppDispatch()
     const [quantity, setQuantity] = useState(1)
     const [loading, setLoading] = useState(false)
+    const [canComment, setCanComment] = useState(true)
     const  id = Number(location.pathname.substring(location.pathname.lastIndexOf('/') + 1))
 
     useEffect(() => {
-        dispatch(getProductById(id))
-    }, [])
+        dispatch(getProductById(id)).unwrap().then((it) => {
+            dispatch(getProductWithFilter({page: 0, limit: 4, filter: "", sort: "", label: it?.categories?.[0].label, search: ""}))
+        })
+        window.scrollTo(0, 0)
+    }, [id])
 
     const product = useAppSelector((root: RootState) => root.product.product)
+    const products = useAppSelector((root: RootState) => root.product.products)
+    const comments = useAppSelector((root: RootState) => root.product.comments)
+
+    const handleComment = (e) => {
+        const data = {...e, food: product}
+
+        dispatch(comment(data))
+        setCanComment(true)
+    }
 
     const handleChange = (isAsc: boolean) => {
         setQuantity(isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1)
     }
 
     const handleOrder = () => {
-        setLoading(true)
-        dispatch(orderProduct({...product, orderCount: quantity})).then(() => setLoading(false))
+        if (localStorage.getItem("token")) {
+            setLoading(true)
+            dispatch(orderProduct({...product, orderCount: quantity})).then(() => setLoading(false))
+        } else {
+            toast.error("Vui long dang nhap")
+        }
     }
 
     return (
@@ -44,9 +65,6 @@ function ProductDetailPage() {
                 </h2>
             </div>
             <div className={"container-content bg-white mt-3 flex w-[75%] relative"}>
-                <div className={"absolute top-[0px] left-[15px] text-yellow-400 z-10 text-5xl"}>
-                    <BsFillBookmarkFill />
-                </div>
                 <div className={"slider-wrap w-1/3"}>
                     <div className={"single-item p-3"}>
                         <Slider {...{
@@ -60,12 +78,14 @@ function ProductDetailPage() {
                             cssEase: "linear",
                             className: "slider center"
                         }}>
-                            <div>
-                                <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
-                            </div>
-                            <div>
-                                <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
-                            </div>
+
+                            {
+                                product ? product.imgs.map(it =>
+                                    (<div>
+                                        <img src={it}/>
+                                    </div>)
+                                ) : <></>
+                            }
                         </Slider>
                     </div>
                     <div className={"multiple-items"}>
@@ -77,42 +97,39 @@ function ProductDetailPage() {
                             slidesToScroll: 1,
                             className: "slider w-full"
                         }}>
-                            <div className={"p-2 bg-white"}>
-                                <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
-                            </div>
-                            <div className={"p-2 bg-white"}>
-                                <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
-                            </div>
-                            <div className={"p-2 bg-white"}>
-                                <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
-                            </div>
-                            <div className={"p-2 bg-white"}>
-                                <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
-                            </div>
-                            <div className={"p-2 bg-white"}>
-                                <img src={"https://i.imgur.com/ZGsriEb.jpg"}/>
-                            </div>
+                            {
+                                product ? product.imgs.map(it =>
+                                    (<div className={"p-2 bg-white"}>
+                                        <img src={it}/>
+                                    </div>)
+                                ) : <></>
+                            }
                         </Slider>
                     </div>
                 </div>
                 <div className={"w-full pl-5 m-3"}>
-                    <h1 className={"text-3xl text-gray-700"}>Trà Gạo Lứt Đông Trùng Wise Food 300g, 20 Gói /Hộp Giảm Stress Hiệu Quả</h1>
+                    <h1 className={"text-3xl text-gray-700"}>{product?.name}</h1>
                     <div className={"row-item flex w-full justify-between"}>
                         <div className={"info w-7/12"}>
                             <div className={"group-status pt-3"}>
                             <span className="first_status">SKU:&nbsp;<span className="status_name text-[#0b850b]">
-                                tra-dong-trung</span><span className="line">&nbsp;&nbsp;|&nbsp;&nbsp;</span></span>
+                                {product?.slug}</span><span className="line">&nbsp;&nbsp;|&nbsp;&nbsp;</span></span>
                                 <span className="first_status status_2">Tình trạng:
-                                    <span className="status_name availabel text-[#0b850b]">Còn hàng</span></span>
+                                    {product?.quantity > 0 ?
+                                        <span className="status_name availabel text-[#0b850b]">
+                                            &nbsp;Còn hàng
+                                        </span>
+                                        : <span className="status_name availabel text-[#0b850b]">
+                                            &nbsp;Hết hàng
+                                        </span>}
+                                    </span>
                             </div>
                             <div className="price-box bg-gray-100 p-4 mt-3">
-                                <span className="special-price"><span className="font-bold text-3xl text-red-500">160,000₫ &nbsp;</span></span>
-                                <span className="old-price">
-                                <del className="text-gray-700">220,000₫</del></span>
+                                <span className="special-price"><span className="font-bold text-3xl text-red-500">{formatCurrency(product?.price || 0)} &nbsp;</span></span>
                             </div>
                             <div className="product-summary mt-5 bg-gray-200">
                                 <div className="rte text-gray-700 bg-white text-sm p-5">
-                                    <p>- giảm stress hiệu quả</p><p>- thanh nhiệt</p><p>- giúp ngủ ngon</p>
+                                    <p>{product?.shortDescription}</p>
                                 </div>
                             </div>
                             <div className="p-2 mt-2">
@@ -121,10 +138,10 @@ function ProductDetailPage() {
                                         <div className={"text-gray-700"}>
                                             <label>Số lượng:</label>
                                             <fieldset>
-                                                <div className="flex mt-2">
+                                                <div className="flex mt-2 ">
                                                     <button className={"p-2 ps-5 pe-5 border rounded"} onClick={() => handleChange(false)} type="button">-</button>
                                                     <input type="number" className={"border text-center w-1/5"} readOnly={true}  value={quantity} />
-                                                    <button className={"p-2 ps-5 pe-5 border rounded"} onClick={() =>handleChange(true)} type="button">+</button>
+                                                    <button className={"p-2 ps-5 pe-5 border rounded"} onClick={() => handleChange(true)} type="button">+</button>
                                                 </div>
                                             </fieldset>
                                         </div>
@@ -221,7 +238,7 @@ function ProductDetailPage() {
                 <p><span className={"text-sm text-gray-700"}>- Quy cách đóng gói: 20 gói/ hộp, 1 gói 15g</span></p>
             </div>
             <div className={"container-content bg-white mt-3 p-3 w-[75%]"}>
-                <h1 className={"uppercase text-xl font-medium mb-8"}>Mô tả sản phẩm</h1>
+                <h1 className={"uppercase text-xl font-medium mb-8"}>Sản phẩm liên quan</h1>
                 <div className={"p-3"}>
                     <Slider {...{
                         dots: false,
@@ -231,28 +248,31 @@ function ProductDetailPage() {
                         slidesToScroll: 1,
                         className: "slider w-full"
                     }}>
-                        <ProductCard title={""} image={""} />
-                        <ProductCard title={""} image={""} />
-                        <ProductCard title={""} image={""} />
-                        <ProductCard title={""} image={""} />
-                        <ProductCard title={""} image={""} />
+                        {
+                            products ? products.map(it => <ProductCard product={it} key={it.id} />) : <></>
+                        }
                     </Slider>
                 </div>
             </div>
 
             <div className={"container-content bg-white mt-3 p-3 w-[75%]"}>
                 <h1 className={"uppercase text-xl font-medium mb-5"}>Đánh giá</h1>
-                <Rating size="large"/>
-                <textarea id="note" name="note" rows="3" className={"border mt-3 w-full p-3"}></textarea>
-                <div className={'flex flex-col items-end'}>
-                    <Button variant={'contained'} color={'success'}>Đánh giá</Button>
-                </div>
+                <Form onFinish={handleComment}>
+                    <Form.Item
+                    name={"rate"}>
+                        <Rate size="large"/>
+                    </Form.Item>
+                    <Form.Item
+                    name={'comment'}>
+                        <textarea id="note" name="note" rows="3" className={"border w-full p-3"}></textarea>
+                    </Form.Item>
+                    <div className={'flex flex-col items-end'}>
+                        <Button type={'submit'} disabled={!product?.canComment && canComment} variant={'contained'} color={'success'}>Đánh giá</Button>
+                    </div>
+                </Form>
 
                 <div className={"list-cmt"}>
-                    <CommentCard />
-                    <CommentCard />
-                    <CommentCard />
-                    <CommentCard />
+                    {comments ? comments.map(it => <CommentCard data={it} />) : <></>}
                 </div>
             </div>
 

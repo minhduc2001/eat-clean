@@ -11,6 +11,15 @@ export interface IProduct {
     description?: string;
     categories?: ICategory[];
     orderCount?: number;
+    comments: IComment[];
+    canComment: boolean;
+}
+
+export interface IBlog {
+    id: number;
+    title: string;
+    thumbnail: string;
+    content: string;
 }
 
 export interface ICategory {
@@ -31,4 +40,16 @@ export interface IComment {
     rate: number;
     user: IUser;
     createAt: Date;
+    food: IProduct;
+}
+
+
+export interface IBill {
+    id: number;
+    carts: ICart[];
+    username: string;
+    phone: string;
+    address: string;
+    note: string;
+    price: number;
 }
