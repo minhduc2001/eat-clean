@@ -49,8 +49,8 @@ const authSlice = createSlice({
       .addCase(requestLogin.fulfilled, (state, action) => {
         if (action.payload == null) return;
         // state.currentUser = rest;
-        state.accessToken = action.payload;
-        localStorage.setItem("token", action.payload)
+        state.accessToken = action.payload.accessToken;
+        localStorage.setItem("token", state.accessToken)
       })
       .addMatcher(
         (action) => action.type.includes("rejected"),

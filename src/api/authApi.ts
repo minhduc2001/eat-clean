@@ -9,7 +9,7 @@ class AuthApi {
 
   async login(
     loginInfomation: ILoginData
-  ): Promise<ApiResponse<string>> {
+  ): Promise<ApiResponse<any>> {
     return Api.POST<ApiResponse<string>>(
       this.baseUrl + "/login",
       // @ts-ignore
