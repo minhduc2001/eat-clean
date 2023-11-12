@@ -53,9 +53,13 @@ function Header() {
                             </Link>
                         </li>
                         <li>
-                            <Link to={"/blog"}>
-                                Yêu thích
-                            </Link>
+                            {
+                                !isLogin ?
+                                    <></> :
+                                    <Link to={"/history"}>
+                                       Lịch sử đặt hàng
+                                    </Link>
+                            }
                         </li>
                         <li>
                             {

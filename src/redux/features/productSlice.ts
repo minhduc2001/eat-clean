@@ -1,12 +1,13 @@
 import authApi from "@/api/authApi";
 import { toastOption } from "@/configs/notification.config";
 import { LoadingStatus } from "@/enums/enum";
-import {IBlog, IComment, ILoginData, IRegisterData, IUser} from "@/interfaces";
+import {IBill, IBlog, IComment, ILoginData, IRegisterData, IUser} from "@/interfaces";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import {ICart, ICategory, IProduct} from "@/interfaces/product.interface.ts";
 import productApi from "@/api/productApi.ts";
 import loading = toast.loading;
+import billApi from "@/api/billApi.ts";
 
 export const getProductByPage = createAsyncThunk(
     "products/get",
@@ -22,6 +23,16 @@ export const getBlogByPage = createAsyncThunk(
     "products/blog",
     async (input: Query, thunkAPI) => {
         const response = await productApi.getBlogs(input)
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
+
+export const getBills = createAsyncThunk(
+    "products/bills",
+    async (input: Query, thunkAPI) => {
+        const response = await billApi.getBills(input)
         if (!response.success)
             throw { message: response.message, errorCode: response.errorCode };
         return response.data;
@@ -106,6 +117,7 @@ export interface ProductState {
     categories: ICategory[] | null;
     blogs: IBlog[] | null;
     blog: IBlog | null;
+    bills: IBill[] | null;
     cart: ICart[] | null;
     error: ErrorResponse | null;
     loading: LoadingStatus;
@@ -119,6 +131,7 @@ const initialState: ProductState = {
     blogs: null,
     blog: null,
     cart: null,
+    bills: null,
     error: null,
     loading: LoadingStatus.Pending,
     metadata: {totalPages: 1}
@@ -165,6 +178,11 @@ const productSlice = createSlice({
             .addCase(comment.fulfilled, (state, action) => {
                 if (action.payload == null) return;
                 state.comments =[...state.comments, action.payload]
+            })
+            .addCase(getBills.fulfilled, (state, action) => {
+                if (action.payload == null) return;
+                state.bills = action.payload.results
+                state.metadata = action.payload.metadata
             })
             .addCase(updateCartWithoutApi.fulfilled, (state, action) => {
                 if (action.payload == null) return;

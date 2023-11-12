@@ -23,7 +23,7 @@ function OrderPage() {
 
     const handleOrder = (e: any) => {
         const cartConvert = cart.map(c => ({...c, foods: {...c.foods, categories: c.foods.categories.map(i => i.id)}}))
-        const data = {...e, price: totalCost, carts: cartConvert, promotion: discount}
+        const data = {...e, price: totalCost - (discount.discount/100) * totalCost, carts: cartConvert, promotion: discount}
         dispatch(paymentProduct(data)).then((it) => {
             console.log(it)
             setOpen(true)

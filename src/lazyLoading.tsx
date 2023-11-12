@@ -10,6 +10,7 @@ const DetailPage = React.lazy(() => import("@/pages/details/index"));
 const ToolPage = React.lazy(() => import("@/pages/tool/index"));
 const BlogPage = React.lazy(() => import("@/pages/blog/index"));
 const BlogDetailPage = React.lazy(() => import("@/pages/blogdetail/index"));
+const HistoryPage = React.lazy(() => import("@/pages/history/index"));
 
 export const PUBLIC_ROUTES = [
   {
@@ -47,6 +48,10 @@ export const PUBLIC_ROUTES = [
   {
     path: "/blog/:slug",
     component: BlogDetailPage,
+  },
+  {
+    path: "/history",
+    component: HistoryPage,
   },
   {
     path: "*",
