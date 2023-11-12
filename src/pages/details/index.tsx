@@ -18,6 +18,7 @@ import { AiFillHeart } from "react-icons/ai";
 import {Form, Rate} from "antd";
 import {formatCurrency} from "@/utils/convert.tsx";
 import {toast} from "react-toastify";
+import HTMLReactParser from "html-react-parser";
 function ProductDetailPage() {
     const location = useLocation();
     const dispatch = useAppDispatch()
@@ -38,10 +39,12 @@ function ProductDetailPage() {
     const comments = useAppSelector((root: RootState) => root.product.comments)
 
     const handleComment = (e) => {
-        const data = {...e, food: product}
+        const convert = product.categories.map(it => it.id)
+        console.log({...product, categories: convert}, 'sssss')
+        const data = {...e, food: {...product, categories: convert}}
 
         dispatch(comment(data))
-        setCanComment(true)
+        setCanComment(false)
     }
 
     const handleChange = (isAsc: boolean) => {
@@ -51,7 +54,8 @@ function ProductDetailPage() {
     const handleOrder = () => {
         if (localStorage.getItem("token")) {
             setLoading(true)
-            dispatch(orderProduct({...product, orderCount: quantity})).then(() => setLoading(false))
+            const categories = product.categories.map(it => it.id)
+            dispatch(orderProduct({...product, orderCount: quantity, categories: categories})).then(() => setLoading(false))
         } else {
             toast.error("Vui long dang nhap")
         }
@@ -67,44 +71,44 @@ function ProductDetailPage() {
             <div className={"container-content bg-white mt-3 flex w-[75%] relative"}>
                 <div className={"slider-wrap w-1/3"}>
                     <div className={"single-item p-3"}>
-                        <Slider {...{
-                            dots: false,
-                            infinite: true,
-                            slidesToShow: 1,
-                            slidesToScroll: 1,
-                            autoplay: true,
-                            speed: 3000,
-                            autoplaySpeed: 5000,
-                            cssEase: "linear",
-                            className: "slider center"
-                        }}>
-
-                            {
-                                product ? product.imgs.map(it =>
-                                    (<div>
-                                        <img src={it}/>
-                                    </div>)
-                                ) : <></>
-                            }
-                        </Slider>
-                    </div>
-                    <div className={"multiple-items"}>
-                        <Slider {...{
-                            dots: false,
-                            infinite: true,
-                            speed: 500,
-                            slidesToShow: 4,
-                            slidesToScroll: 1,
-                            className: "slider w-full"
-                        }}>
-                            {
-                                product ? product.imgs.map(it =>
+                        {
+                            product ? <Slider {...{
+                                dots: false,
+                                infinite: true,
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                                autoplay: true,
+                                speed: 2000,
+                                autoplaySpeed: 4000,
+                                cssEase: "linear",
+                                className: "slider center"
+                            }}>
+                                {product.imgs.map(it =>
                                     (<div className={"p-2 bg-white"}>
                                         <img src={it}/>
                                     </div>)
-                                ) : <></>
-                            }
-                        </Slider>
+                                )}
+                            </Slider>: <></>
+                        }
+                    </div>
+                    <div className={"multiple-items"}>
+                        {
+                            product ? <Slider {...{
+                                dots: false,
+                                infinite: true,
+                                speed: 500,
+                                slidesToShow: 4,
+                                slidesToScroll: 1,
+                                className: "slider w-full"
+                            }}>
+                                {product.imgs.map(it =>
+                                    (<div className={"p-2 bg-white"}>
+                                        <img src={it}/>
+                                    </div>)
+                                )}
+                            </Slider>: <></>
+                        }
+
                     </div>
                 </div>
                 <div className={"w-full pl-5 m-3"}>
@@ -208,34 +212,7 @@ function ProductDetailPage() {
                 </div>
             </div>
             <div className={"container-content bg-white mt-3 p-3 w-[75%]"}>
-                <h1 className={"uppercase text-xl font-medium mb-5"}>Mô tả sản phẩm</h1>
-                <p><span className={"text-sm text-gray-700"}>Trà Gạo Lứt Đông Trùng Wise Food 300g Giảm Stress Hiệu Quả</span></p>
-                <p><span className={"text-sm text-gray-700"}>Thông tin sản phẩm</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Thành phần: đông trùng hạ thảo, gạo lứt, đậu đỏ, đậu đen, kỷ tử, hoa nhài, cỏ ngọt</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Nguyên liệu Organic, không chất bảo quản và phụ gia</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Khối lượng tịnh: 300g</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Quy cách đóng gói: 20 gói/ hộp, 1 gói 15g</span></p>
-                <br/>
-                <p><span className={"text-sm text-gray-700"}>Trà Gạo Lứt Đông Trùng Wise Food 300g Giảm Stress Hiệu Quả</span></p>
-                <p><span className={"text-sm text-gray-700"}>Thông tin sản phẩm</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Thành phần: đông trùng hạ thảo, gạo lứt, đậu đỏ, đậu đen, kỷ tử, hoa nhài, cỏ ngọt</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Nguyên liệu Organic, không chất bảo quản và phụ gia</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Khối lượng tịnh: 300g</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Quy cách đóng gói: 20 gói/ hộp, 1 gói 15g</span></p>
-                <br/>
-                <p><span className={"text-sm text-gray-700"}>Trà Gạo Lứt Đông Trùng Wise Food 300g Giảm Stress Hiệu Quả</span></p>
-                <p><span className={"text-sm text-gray-700"}>Thông tin sản phẩm</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Thành phần: đông trùng hạ thảo, gạo lứt, đậu đỏ, đậu đen, kỷ tử, hoa nhài, cỏ ngọt</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Nguyên liệu Organic, không chất bảo quản và phụ gia</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Khối lượng tịnh: 300g</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Quy cách đóng gói: 20 gói/ hộp, 1 gói 15g</span></p>
-                <br/>
-                <p><span className={"text-sm text-gray-700"}>Trà Gạo Lứt Đông Trùng Wise Food 300g Giảm Stress Hiệu Quả</span></p>
-                <p><span className={"text-sm text-gray-700"}>Thông tin sản phẩm</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Thành phần: đông trùng hạ thảo, gạo lứt, đậu đỏ, đậu đen, kỷ tử, hoa nhài, cỏ ngọt</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Nguyên liệu Organic, không chất bảo quản và phụ gia</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Khối lượng tịnh: 300g</span></p>
-                <p><span className={"text-sm text-gray-700"}>- Quy cách đóng gói: 20 gói/ hộp, 1 gói 15g</span></p>
+                {HTMLReactParser(product?.description || "")}
             </div>
             <div className={"container-content bg-white mt-3 p-3 w-[75%]"}>
                 <h1 className={"uppercase text-xl font-medium mb-8"}>Sản phẩm liên quan</h1>

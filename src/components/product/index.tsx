@@ -17,7 +17,7 @@ function ProductCard(props: any) {
                     <img src={data.imgs[0]}/>
                 </Link>
                 <p className={"desc"}>
-                    {data.description}
+                    {data.shortDescription}
                 </p>
                 <p className={"price-label"}>
                     Giá: <span>{formatCurrency(data.price)}</span>

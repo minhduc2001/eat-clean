@@ -7,6 +7,7 @@ import {updateCartWithoutApi} from "@/redux/features/productSlice.ts";
 import {Link} from "react-router-dom";
 import {Button} from "@mui/material";
 import {formatCurrency} from "@/utils/convert.tsx";
+import categories from "@/components/Categories.tsx";
 
 function Cart(props: any) {
     console.log(props)
@@ -15,9 +16,10 @@ function Cart(props: any) {
     const dispatch = useAppDispatch()
     const handleOrder = (isAsc: boolean) => {
         setLoading(true)
+        const convert = props.cart.foods.categories.map(it => it.id)
         dispatch(orderProduct(
             {...props.cart.foods,
-                orderCount: isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1}))
+                orderCount: isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1, categories: convert}))
             .then(() => {
                 setLoading(false)
                 dispatch(updateCartWithoutApi({...props.cart,

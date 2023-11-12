@@ -7,6 +7,7 @@ import {RootState} from "@/redux/store.ts";
 import {getCart} from "@/redux/features/productSlice.ts";
 import {formatCurrency} from "@/utils/convert.tsx";
 import {Link, useNavigate} from "react-router-dom";
+import {Empty} from "antd";
 
 function CartPage() {
 
@@ -37,16 +38,19 @@ function CartPage() {
             <div className={"flex w-9/12 flex-row container-content"}>
                 <div className={"list-carts"}>
                     {
-                        cart ? cart.map(it => {
+                        cart && cart.length > 0 ? cart.map(it => {
                             return (
                                 <>
                                     <Cart cart={it} key={it.id} />
                                     <div className={"w-full pl-3 pr-3"}><Divider /></div>
                                 </>
                             )
-                        }) : <div></div>
+                        }) : <></>
                     }
                 </div>
+                {!cart == null || cart?.length == 0  ? <div className={'w-full'}>
+                    <Empty className={''} />
+                </div> : <></>}
                 <div className={"w-5/12"}>
                     <div className="w-full p-5">
                         <div className="title-cart flex w-11/12 justify-between">

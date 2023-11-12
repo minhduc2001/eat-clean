@@ -12,8 +12,9 @@ import BlogCard from "@/components/blog";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
 import {getBlogByPage, getProductByPage} from "@/redux/features/productSlice.ts";
 import {RootState} from "@/redux/store.ts";
-import {useLocation} from "react-router-dom";
+import {useLocation, useSearchParams} from "react-router-dom";
 import {countCart} from "@/redux/features/cartSlide.ts";
+import {toast} from "react-toastify";
 
 
 function HomePage() {
@@ -28,11 +29,22 @@ function HomePage() {
 
   const dispatch = useAppDispatch()
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+
   useEffect(() => {
     dispatch(getProductByPage({page: 0, limit: 10}))
     dispatch(getBlogByPage({page: 0, limit: 9}))
     if (localStorage.getItem("token")) {
       dispatch(countCart())
+    }
+    const rsCode = searchParams.get("resultCode")
+    if (rsCode != null) {
+      if (rsCode != "0") {
+        toast.error("Thanh toán thất bại")
+      } else {
+        toast.success("Thanh toán thành công")
+      }
     }
   }, [])
 
