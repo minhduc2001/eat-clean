@@ -8,7 +8,7 @@ import { BsFillBookmarkFill } from 'react-icons/bs';
 import {Button, TextField} from "@mui/material";
 import CommentCard from "@/components/comment";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {comment, getProductById, getProductWithFilter} from "@/redux/features/productSlice.ts";
 import {RootState} from "@/redux/store.ts";
 import {orderProduct} from "@/redux/features/cartSlide.ts";
@@ -26,7 +26,7 @@ function ProductDetailPage() {
     const [loading, setLoading] = useState(false)
     const [canComment, setCanComment] = useState(true)
     const  id = Number(location.pathname.substring(location.pathname.lastIndexOf('/') + 1))
-
+    const navigate = useNavigate()
     useEffect(() => {
         dispatch(getProductById(id)).unwrap().then((it) => {
             dispatch(getProductWithFilter({page: 0, limit: 4, filter: "", sort: "", label: it?.categories?.[0].label, search: ""}))
@@ -51,11 +51,18 @@ function ProductDetailPage() {
         setQuantity(isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1)
     }
 
-    const handleOrder = () => {
+    const handleOrder = (isBuy: boolean) => {
         if (localStorage.getItem("token")) {
             setLoading(true)
             const categories = product.categories.map(it => it.id)
-            dispatch(orderProduct({...product, orderCount: quantity, categories: categories})).then(() => setLoading(false))
+            if (isBuy) {
+                navigate("/order", {state: {data: [{quantity: quantity, foods: product, id: -1}]}})
+            } else {
+                dispatch(orderProduct({...product, orderCount: quantity, categories: categories})).then(() => {
+                    setLoading(false)
+
+                })
+            }
         } else {
             toast.error("Vui long dang nhap")
         }
@@ -150,10 +157,10 @@ function ProductDetailPage() {
                                             </fieldset>
                                         </div>
                                         <div className="button_actions mt-5 flex flex-col items-start">
-                                            <button onClick={handleOrder} type="submit" className="bg-[#ff5722] text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
+                                            <button onClick={() => handleOrder(false)} type="submit" className="bg-[#ff5722] text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
                                                 <span className="text_1">Thêm vào giỏ hàng</span>
                                             </button>
-                                            <button type="submit"className="text-[#0b850b] border-[#0b850b] border min-w-[303px] mt-2
+                                            <button onClick={() => handleOrder(true)} type="submit"className="text-[#0b850b] border-[#0b850b] border min-w-[303px] mt-2
                                             text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
                                                 <span className="text_1">Mua ngay</span>
                                             </button>

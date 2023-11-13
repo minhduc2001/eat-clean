@@ -146,7 +146,14 @@ function HomePage() {
           </h2>
           {
               products ?
-              <Slider {...settings}>
+              <Slider {...{
+                dots: false,
+                infinite: true,
+                speed: 500,
+                slidesToShow: Math.min(products.length, 4),
+                slidesToScroll: 1,
+                className: "slider center"
+              }}>
                 {
                   products.map(it =>
                       <ProductCard product={it} key={it.id} />
@@ -206,7 +213,7 @@ function HomePage() {
             blogs ? <Slider {...{
               dots: true,
               infinite: true,
-              slidesToShow: 3,
+              slidesToShow: Math.min(blogs.length, 3),
               slidesToScroll: 1,
               autoplay: true,
               speed: 1000,

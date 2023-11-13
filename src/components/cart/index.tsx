@@ -19,7 +19,7 @@ function Cart(props: any) {
         const convert = props.cart.foods.categories.map(it => it.id)
         dispatch(orderProduct(
             {...props.cart.foods,
-                orderCount: isAsc ?( quantity + 1) :( quantity - 1) > 0 ? (quantity - 1) : 1, categories: convert}))
+                orderCount: isAsc ?(1) :( quantity - 1) > 0 ? (- 1) : 1, categories: convert}))
             .then(() => {
                 setLoading(false)
                 dispatch(updateCartWithoutApi({...props.cart,
