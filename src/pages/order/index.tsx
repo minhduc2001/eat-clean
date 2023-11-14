@@ -1,33 +1,42 @@
 import React, {useEffect, useState} from "react";
 import "./index.scss"
-import {Divider, TextField, Button, Backdrop} from "@mui/material";
+import {Divider, TextField, Button, Backdrop, CircularProgress} from "@mui/material";
 import {Badge, Form, Input, QRCode, Radio, Space} from "antd";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import Cart from "@/components/cart";
 import {formatCurrency} from "@/utils/convert.tsx";
 import {useAppDispatch} from "@/redux/hooks.ts";
 import {checkPromotion, paymentProduct} from "@/redux/features/cartSlide.ts";
+import {toast} from "react-toastify";
 
 function OrderPage() {
     const location = useLocation()
     const cart = location.state?.data
     const [open, setOpen] = useState(false)
     const [qrcode, setQrcode] = useState("")
+    const [payment, setPayment] = useState("MOMO")
     const [discount, setDiscount] = useState({discount: 0})
     const [code, setCode] = useState("")
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
     const totalCost = cart ? cart.reduce((total, item) => {
         const itemCost = (item.foods?.price ? item.foods?.price : 0) * item.quantity;
         return total + itemCost;
     }, 0) : 0;
 
     const handleOrder = (e: any) => {
+        setOpen(true)
         const cartConvert = cart.map(c => ({...c, foods: {...c.foods, categories: c.foods.categories.map(i => i.id)}}))
         const data = {...e, price: totalCost - (discount.discount/100) * totalCost, carts: cartConvert, promotion: discount}
-        dispatch(paymentProduct(data)).then((it) => {
+        dispatch(paymentProduct(data)).unwrap().then((it) => {
+            setOpen(false)
             console.log(it)
-            setOpen(true)
-            window.location.href = it.payload;
+            if (it?.includes("http")) {
+                window.location.href = it;
+                return;
+            }
+            toast.success("Đặt hàng thành công")
+            navigate("/")
         })
     }
 
@@ -48,6 +57,7 @@ function OrderPage() {
                 <Form
                     className={'w-full'}
                     onFinish={handleOrder}
+                    initialValues={{methodType: "MOMO"}}
                 >
                 <div className="flex justify-between h-full">
                     <div className="fieldset flex flex-col w-1/3">
@@ -82,11 +92,18 @@ function OrderPage() {
 
                     <div className="fieldset flex flex-col w-1/3">
                         <h3 className={"font-semibold text-xl"}>Phương thức thanh toán</h3>
-                        <Radio.Group  value={1} className={"mt-5"}>
-                            <Space direction="vertical">
-                                <Radio value={1}>Thanh toán bằng MOMO</Radio>
-                            </Space>
-                        </Radio.Group>
+                        <Form.Item
+                            name={"methodType"}
+                        >
+                            <Radio.Group className={"mt-5 flex-col flex"}>
+                                <Space direction="vertical">
+                                    <Radio value={"MOMO"}>Thanh toán bằng MOMO</Radio>
+                                </Space>
+                                <Space direction="vertical">
+                                    <Radio value={"COD"}>Thanh toán khi nhận hàng</Radio>
+                                </Space>
+                            </Radio.Group>
+                        </Form.Item>
                     </div>
 
                     <div className="fieldset flex flex-col w-1/4">
@@ -141,46 +158,10 @@ function OrderPage() {
 
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={false}
+                open={open}
                 onClick={() => setOpen(false)}
             >
-                <div className={'w-10/12 bg-[#B52275] h-[80vh] rounded flex flex-col'}>
-                    <div className={'h-[50vh] w-full flex items-center justify-center'}>
-                        <div className={'w-7/12 h-full flex-col flex items-center justify-center'}>
-                            <div className={'w-full flex justify-center'}>
-                                <img className={'w-[100px] h-[100px] mr-5'} src={'logo-mm.png'} />
-                                <div className={'bg-white p-1 rounded'}>
-                                    <img className={'w-[90px] h-[90px]'} src={'logo.png'} />
-                                </div>
-                            </div>
-
-                            <span className={'text-xl mt-5'}>Quét mã QRCODE bằng ứng dụng MOMO để thực hiện thanh toán</span>
-                        </div>
-                        <div className={'h-[40vh] rounded bg-white w-1/5 flex flex-col items-center justify-around'}>
-                            <QRCode size={250}
-                                    style={{ height: "auto", maxWidth: "100%", width: "100%" }} value={qrcode} />
-
-                            <span className={'text-black'}>Giao dịch sẽ bị hủy sau: 15:00</span>
-                        </div>
-                    </div>
-                    <div className={'h-[30vh] w-full bg-gray-900 flex justify-around items-center'}>
-                        <div className={'flex flex-col items-center'}>
-                            <img className={'w-[70px] h-[70px] mr-5'} src={'logo-mm.png'} />
-                            <p className={'font-semibold text-center mr-5'}>Bước 1</p>
-                            <span>Mở ứng dụng Momo</span>
-                        </div>
-                        <div className={'flex flex-col items-center'}>
-                            <img className={'w-[70px] h-[70px] mr-5'} src={'logo-mm.png'} />
-                            <p className={'font-semibold mr-5'}>Bước 1</p>
-                            <span>Mở ứng dụng Momo</span>
-                        </div>
-                        <div className={'flex flex-col items-center'}>
-                            <img className={'w-[70px] h-[70px] mr-5'} src={'logo-mm.png'} />
-                            <p className={'font-semibold mr-5'}>Bước 1</p>
-                            <span>Mở ứng dụng Momo</span>
-                        </div>
-                    </div>
-                </div>
+                <CircularProgress />
             </Backdrop>
         </div>
     );

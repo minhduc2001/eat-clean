@@ -23,7 +23,7 @@ function Header() {
         <div className="header">
             <div className={"container"}>
                 <div className="logo-header">
-                    <img src="logo.png" />
+                    <img src="/logo.png" />
                 </div>
                 <div className="nav">
                     <ul>

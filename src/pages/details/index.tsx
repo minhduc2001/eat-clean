@@ -90,11 +90,11 @@ function ProductDetailPage() {
                                 cssEase: "linear",
                                 className: "slider center"
                             }}>
-                                {product.imgs.map(it =>
-                                    (<div className={"p-2 bg-white"}>
+                                {product.imgs.map(it => {
+                                    return (<div className={"p-2 bg-white"}>
                                         <img src={it}/>
                                     </div>)
-                                )}
+                                })}
                             </Slider>: <></>
                         }
                     </div>
@@ -104,14 +104,16 @@ function ProductDetailPage() {
                                 dots: false,
                                 infinite: true,
                                 speed: 500,
-                                slidesToShow: 4,
+                                slidesToShow: Math.min(product.imgs.length, 4),
                                 slidesToScroll: 1,
                                 className: "slider w-full"
                             }}>
                                 {product.imgs.map(it =>
-                                    (<div className={"p-2 bg-white"}>
-                                        <img src={it}/>
-                                    </div>)
+                                    (
+                                        <div className={"p-2 bg-white max-w-[80px]"}>
+                                            <img src={it}/>
+                                        </div>
+                                    )
                                 )}
                             </Slider>: <></>
                         }
@@ -224,18 +226,20 @@ function ProductDetailPage() {
             <div className={"container-content bg-white mt-3 p-3 w-[75%]"}>
                 <h1 className={"uppercase text-xl font-medium mb-8"}>Sản phẩm liên quan</h1>
                 <div className={"p-3"}>
-                    <Slider {...{
-                        dots: false,
-                        infinite: true,
-                        speed: 500,
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                        className: "slider w-full"
-                    }}>
-                        {
-                            products ? products.map(it => <ProductCard product={it} key={it.id} />) : <></>
-                        }
-                    </Slider>
+                    {
+                        products ? <Slider {...{
+                            dots: false,
+                            infinite: true,
+                            speed: 500,
+                            slidesToShow: Math.min(products.length, 4),
+                            slidesToScroll: 1,
+                            className: "slider w-full"
+                        }}>
+                            {
+                                products.map(it => <ProductCard product={it} key={it.id} />)
+                            }
+                        </Slider> : <></>
+                    }
                 </div>
             </div>
 

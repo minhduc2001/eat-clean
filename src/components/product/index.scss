@@ -12,14 +12,19 @@
 
   }
 
+  img {
+    object-fit: cover;
+    object-position: center;
+  }
+
   h3 {
     text-transform: uppercase;
     text-align: center;
     padding-inline: 20px;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* number of lines to show */
-    line-clamp: 2;
+    -webkit-line-clamp: 1; /* number of lines to show */
+    line-clamp: 1;
     -webkit-box-orient: vertical;
   }
 

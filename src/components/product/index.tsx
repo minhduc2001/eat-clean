@@ -14,7 +14,9 @@ function ProductCard(props: any) {
                     </Link>
                 </h3>
                 <Link to={`/product/${data?.id}`}>
-                    <img src={data.imgs[0]}/>
+                    <div className={'overflow-hidden h-[200px]'}>
+                        <img src={data.imgs[0]} className={'object-center object-contain'}/>
+                    </div>
                 </Link>
                 <p className={"desc"}>
                     {data.shortDescription}
