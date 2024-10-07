@@ -56,7 +56,7 @@ function HistoryPage() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {bills ? bills.slice(0, limit).map((it) => {
+                                {bills ? bills.map((it) => {
                                     return (
                                         <TableRow
                                             hover

@@ -21,7 +21,7 @@ function BlogPage() {
     }, [])
 
     const blogs =  useAppSelector((root: RootState) => root.product.blogs)
-    const totalPage =  useAppSelector((root: RootState) => root.product.metadata.totalPages)
+    const totalPage =  useAppSelector((root: RootState) => root.product.metadata?.totalPages)
     const isLoading = useAppSelector((root: RootState) => root.product.loading) == LoadingStatus.Pending
     return (
         <div className={"flex flex-col justify-center items-center bg-zinc-100"}>

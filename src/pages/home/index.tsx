@@ -55,7 +55,7 @@ function HomePage() {
     <>
       <Helmet title="Home" description="home page" />
       <AsyncWrapper loading={false} fulfilled={Boolean([])}>
-        <Carousel autoplay autoplaySpeed={3000} effect="fade">
+        <Carousel autoplay autoplaySpeed={3000} effect="fade" className={'min-h-[95vh] overflow-hidden'}>
           <div>
             <Image
                 src="https://healthyeating.shop/wp-content/uploads/2023/06/granola-sieu-hat-it-yen-mach-1.jpg"
