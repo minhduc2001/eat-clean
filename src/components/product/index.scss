@@ -5,8 +5,6 @@
   font-family: Roboto;
   border-radius: 3px;
   cursor: pointer;
-
-  max-width: 290px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
   &:hover {
 
@@ -29,13 +27,7 @@
   }
 
   .desc {
-    max-height: 3.6em; /* You can adjust this value to control the number of lines displayed */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    line-height: 1.2em;
+    height: 50px; /* You can adjust this value to control the number of lines displayed */
     text-align: center;
     letter-spacing: 1.1px;
     font-size: 12px;

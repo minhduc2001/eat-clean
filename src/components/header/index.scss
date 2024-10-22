@@ -8,7 +8,6 @@
 }
 
 .header .container {
-  width: 75%;
   display: flex;
   height: 90px;
   justify-content: center;
@@ -53,6 +52,12 @@
       }
     }
   }
+
+  @media (max-width: 768px) {
+    .nav {
+      display: none;
+    }
+  }
 }
 
 .header .bread-crumb {
@@ -63,3 +68,15 @@
   align-self: center;
   font-size: 15px;
 }
+
+.menu-item{
+  text-underline: none;
+  text-transform: uppercase;
+  font-family: "Roboto";
+  font-size: 13pt;
+  &:hover {
+    cursor: pointer;
+    color: #0b850b;
+  }
+}
+

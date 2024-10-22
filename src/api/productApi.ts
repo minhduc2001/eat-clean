@@ -14,6 +14,9 @@ class ProductApi {
         return Api.GET(this.baseUrl + "/get", _param);
     }
 
+    async getCombo(): Promise<ApiResponse<IProduct[]>> {
+        return Api.GET(this.baseUrl + "/get-combo");
+    }
     async getBlogs(
         _param: Query,
     ): Promise<ApiListResponse<IBlog>> {

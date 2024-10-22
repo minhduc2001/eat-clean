@@ -1,9 +1,11 @@
 import React from "react";
 import "./index.scss"
+import Helmet from "@/components/Helmet.tsx";
 
 function IntroducePage() {
     return (
         <div className={"introduce-container"}>
+            <Helmet title={"Giới thiệu"}/>
             <div className={"title"}>
                 <h2>
                     Chế Độ Ăn Giảm Cân Khoa Học – Healthy Eating

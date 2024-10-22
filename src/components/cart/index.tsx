@@ -5,12 +5,9 @@ import {deleteCart, orderProduct} from "@/redux/features/cartSlide.ts";
 import {useAppDispatch} from "@/redux/hooks.ts";
 import {updateCartWithoutApi} from "@/redux/features/productSlice.ts";
 import {Link} from "react-router-dom";
-import {Button} from "@mui/material";
 import {formatCurrency} from "@/utils/convert.tsx";
-import categories from "@/components/Categories.tsx";
 
 function Cart(props: any) {
-    console.log(props)
     const [quantity, setQuantity] = useState(props?.cart?.quantity || 0)
     const [loading, setLoading] = useState(false)
     const dispatch = useAppDispatch()
@@ -30,46 +27,37 @@ function Cart(props: any) {
     }
 
     const handleDelete = () => {
-        console.log(props?.cart?.id)
         dispatch(deleteCart(Number(props?.cart?.id))).then(() => {
             location.reload()
         })
     }
     return (
-        <div className={"cart-container h-[120px] w-full flex items-center"}>
-            <div className="flex h-full items-center">
-                <div className={"h-full min-w-[50px] flex items-center justify-between"}>
-                    <Button className="text-center w-full" onClick={handleDelete}>
-                        <DeleteOutlineIcon className={"text-red-600"} fontSize={'medium'}/>
-                    </Button>
-                </div>
-                <div className="w-[100px]">
-                    <Link to={`/product/${props?.cart?.foods?.id}`} className="product-images1  pos-relative embed-responsive embed-responsive-1by1" title="Trà Gạo Lứt Đông Trùng Wise Food 300g, 20 Gói /Hộp Giảm Stress Hiệu Quả">
-                        <img className="w-full" src={props?.cart?.foods?.imgs[0]} alt="Trà Gạo Lứt Đông Trùng Wise Food 300g, 20 Gói /Hộp Giảm Stress Hiệu Quả" />
-                    </Link>
-                </div>
-                <div className="product-cart-infor flex justify-around w-full border-y-green-900 pl-5">
-                    <div className="w-3/6">
-                        <h3 className="product-name">
-                            <a className="text-gray-700"
-                               href="" title="Trà Gạo Lứt Đông Trùng Wise Food 300g, 20 Gói /Hộp Giảm Stress Hiệu Quả">
-                                {props?.cart?.foods?.name}</a>  </h3>
-                        <span className="variant-title"></span>
-                    </div>
-
-                    <div className="cart-price ml-10">
+        <div className="w-full flex items-center mt-1.5 mb-2">
+            <div className="h-full flex items-center p-0">
+                <button className="p-2 text-center w-full" onClick={handleDelete}>
+                    <DeleteOutlineIcon className="text-red-600" fontSize='small'/>
+                </button>
+            </div>
+            <div>
+                <Link to={`/product/${props?.cart?.foods?.id}`} className="product-images1  pos-relative embed-responsive embed-responsive-1by1">
+                    <img className="w-full max-h-20" src={props?.cart?.foods?.imgs[0]} />
+                </Link>
+            </div>
+            <div className="flex justify-between w-full border-y-green-900 pl-5">
+                <div className="flex flex-col justify-between h-full">
+                    <h3 className="product-name">
+                        <a className="text-gray-700 font-light line-clamp-1 max-h-20">
+                            {props?.cart?.foods?.name}
+                        </a>
+                    </h3>
+                    <div className="">
                         <span className="product-price price text-red-600 font-bold">{formatCurrency(props?.cart?.foods?.price)}</span>
                     </div>
-                    <div className="ml-5">
-                        <div className="txt_center">
-                            <input className="variantID" type="hidden" name="variantId" value="49" />
-                            <div className="flex ml-5">
-                                <button className={"pl-3 pr-3 border rounded"} type="button" onClick={() => handleOrder(false)}>-</button>
-                                <input type="number" className={"border text-right w-1/5 p-1 text-sm"} value={quantity} />
-                                <button className={"ps-3 pe-3 border rounded p-1"} type="button" onClick={() => handleOrder(true)}>+</button>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div className="flex">
+                    <button className="px-1 border rounded w-1/3 max-w-[50px]" type="button" onClick={() => handleOrder(false)}>-</button>
+                    <input type="number" className="border w-1/3 text-center text-sm" value={quantity} />
+                    <button className="px-1 border rounded p-1 w-1/3 max-w-[50px]" type="button" onClick={() => handleOrder(true)}>+</button>
                 </div>
             </div>
         </div>

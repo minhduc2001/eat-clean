@@ -4,7 +4,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "@/components/product";
-import { BsFillBookmarkFill } from 'react-icons/bs';
 import {Button, TextField} from "@mui/material";
 import CommentCard from "@/components/comment";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
@@ -13,12 +12,11 @@ import {comment, getProductById, getProductWithFilter} from "@/redux/features/pr
 import {RootState} from "@/redux/store.ts";
 import {orderProduct} from "@/redux/features/cartSlide.ts";
 import BackDropLoading from "@/components/BackDropLoading.tsx";
-import {LoadingStatus} from "@/enums/enum.ts";
-import { AiFillHeart } from "react-icons/ai";
 import {Form, Rate} from "antd";
 import {formatCurrency} from "@/utils/convert.tsx";
 import {toast} from "react-toastify";
 import HTMLReactParser from "html-react-parser";
+import Helmet from "@/components/Helmet.tsx";
 function ProductDetailPage() {
     const location = useLocation();
     const dispatch = useAppDispatch()
@@ -29,7 +27,7 @@ function ProductDetailPage() {
     const navigate = useNavigate()
     useEffect(() => {
         dispatch(getProductById(id)).unwrap().then((it) => {
-            dispatch(getProductWithFilter({page: 0, limit: 4, filter: "", sort: "", label: it?.categories?.[0].label, search: ""}))
+            dispatch(getProductWithFilter({page: 0, limit: 4, filter: "", sort: "", label: it?.categories?.[0].key, search: ""}))
         })
         window.scrollTo(0, 0)
     }, [id])
@@ -37,7 +35,6 @@ function ProductDetailPage() {
     const product = useAppSelector((root: RootState) => root.product.product)
     const products = useAppSelector((root: RootState) => root.product.products)
     const comments = useAppSelector((root: RootState) => root.product.comments)
-
     const handleComment = (e) => {
         const convert = product.categories.map(it => it.id)
         console.log({...product, categories: convert}, 'sssss')
@@ -54,7 +51,7 @@ function ProductDetailPage() {
     const handleOrder = (isBuy: boolean) => {
         if (localStorage.getItem("token")) {
             setLoading(true)
-            const categories = product.categories.map(it => it.id)
+            const categories = product?.categories?.map(it => it.id)
             if (isBuy) {
                 navigate("/order", {state: {data: [{quantity: quantity, foods: product, id: -1}]}})
             } else {
@@ -64,19 +61,20 @@ function ProductDetailPage() {
                 })
             }
         } else {
-            toast.error("Vui long dang nhap")
+            toast.error("Vui lòng đăng nhập")
         }
     }
 
     return (
         <div className={"flex flex-col justify-center items-center bg-gray-50"}>
+            <Helmet title={"Chi tiết sản phẩm"}/>
             <div style={{fontSize: "20pt", marginTop: "30px"}}>
                 <h2>
                     chi tiết sản phẩm
                 </h2>
             </div>
-            <div className={"container-content bg-white mt-3 flex w-[75%] relative"}>
-                <div className={"slider-wrap w-1/3"}>
+            <div className={"container-content bg-white mt-3 flex flex-row justify-around flex-wrap"}>
+                <div className="img-container">
                     <div className={"single-item p-3"}>
                         {
                             product ? <Slider {...{
@@ -85,45 +83,45 @@ function ProductDetailPage() {
                                 slidesToShow: 1,
                                 slidesToScroll: 1,
                                 autoplay: true,
-                                speed: 2000,
+                                speed: 200,
                                 autoplaySpeed: 4000,
                                 cssEase: "linear",
                                 className: "slider center"
                             }}>
                                 {product.imgs.map(it => {
                                     return (<div className={"p-2 bg-white"}>
-                                        <img src={it}/>
+                                        <img className="w-full" src={it}/>
                                     </div>)
                                 })}
                             </Slider>: <></>
                         }
                     </div>
-                    <div className={"multiple-items"}>
+                    <div className="multiple-items flex justify-center">
                         {
-                            product ? <Slider {...{
+                            product && <Slider {...{
                                 dots: false,
                                 infinite: true,
                                 speed: 500,
-                                slidesToShow: Math.min(product.imgs.length, 4),
+                                slidesToShow: 4,
                                 slidesToScroll: 1,
-                                className: "slider w-full"
+                                className: "slider w-full center",
                             }}>
-                                {product.imgs.map(it =>
+                                {product?.imgs.concat(Array(4).fill(product.imgs[0])).map(it =>
                                     (
-                                        <div className={"p-2 bg-white max-w-[80px]"}>
-                                            <img src={it}/>
+                                        <div className= "p-2 bg-white mx-2">
+                                            <img src={it} className="px-1"/>
                                         </div>
                                     )
                                 )}
-                            </Slider>: <></>
+                            </Slider>
                         }
 
                     </div>
                 </div>
-                <div className={"w-full pl-5 m-3"}>
+                <div className={"pl-5 m-3"}>
                     <h1 className={"text-3xl text-gray-700"}>{product?.name}</h1>
-                    <div className={"row-item flex w-full justify-between"}>
-                        <div className={"info w-7/12"}>
+                    <div className="flex w-full flex-wrap gap-5 justify-center">
+                        <div className="info-product">
                             <div className={"group-status pt-3"}>
                             <span className="first_status">SKU:&nbsp;<span className="status_name text-[#0b850b]">
                                 {product?.slug}</span><span className="line">&nbsp;&nbsp;|&nbsp;&nbsp;</span></span>
@@ -141,12 +139,12 @@ function ProductDetailPage() {
                                 <span className="special-price"><span className="font-bold text-3xl text-red-500">{formatCurrency(product?.price || 0)} &nbsp;</span></span>
                             </div>
                             <div className="product-summary mt-5 bg-gray-200">
-                                <div className="rte text-gray-700 bg-white text-sm p-5">
+                                <div className="max-w-md text-gray-700 bg-white text-sm p-5">
                                     <p>{product?.shortDescription}</p>
                                 </div>
                             </div>
                             <div className="p-2 mt-2">
-                                <div className="w-100 ">
+                                <div className="w-100">
                                     <div className="form_product_content">
                                         <div className={"text-gray-700"}>
                                             <label>Số lượng:</label>
@@ -159,19 +157,26 @@ function ProductDetailPage() {
                                             </fieldset>
                                         </div>
                                         <div className="button_actions mt-5 flex flex-col items-start">
-                                            <button onClick={() => handleOrder(false)} type="submit" className="bg-[#ff5722] text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
-                                                <span className="text_1">Thêm vào giỏ hàng</span>
+                                            <button
+                                                onClick={() => handleOrder(false)}
+                                                type="submit"
+                                                className="bg-[#ff5722] text-white text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md w-full"
+                                            >
+                                                <span>Thêm vào giỏ hàng</span>
                                             </button>
-                                            <button onClick={() => handleOrder(true)} type="submit"className="text-[#0b850b] border-[#0b850b] border min-w-[303px] mt-2
-                                            text-sm uppercase pt-2 pb-2 ps-20 pe-20 rounded-md">
-                                                <span className="text_1">Mua ngay</span>
+                                            <button
+                                                onClick={() => handleOrder(true)}
+                                                type="submit"
+                                                className="text-[#0b850b] border-[#0b850b] border text-sm uppercase pt-2 pb-2 mt-3 ps-20 pe-20 rounded-md w-full"
+                                            >
+                                                <span>Mua ngay</span>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className={"only-eat-clean p-4 border w-1/3 rounded border-gray-200 text-gray-700 h-fit"}>
+                        <div className="p-4 border bg-amber-200 rounded border-gray-200 text-gray-700 h-fit info-product">
                             <div className="product-policises-wrapper">
                                 <h5 className="m-0 mb-3 font-medium text-xl">
                                     Chỉ có ở Wisefood:
@@ -227,18 +232,45 @@ function ProductDetailPage() {
                 <h1 className={"uppercase text-xl font-medium mb-8"}>Sản phẩm liên quan</h1>
                 <div className={"p-3"}>
                     {
-                        products ? <Slider {...{
+                        products && products.length >= 4 ? <Slider {...{
                             dots: false,
                             infinite: true,
                             speed: 500,
-                            slidesToShow: Math.min(products.length, 4),
+                            slidesToShow: 1,
                             slidesToScroll: 1,
-                            className: "slider w-full"
+                            className: "slider w-full center",
+                            responsive: [
+                                {
+                                    breakpoint: 1024,
+                                    settings: {
+                                        slidesToShow: 3,
+                                        slidesToScroll: 3,
+                                        infinite: true,
+                                        dots: true
+                                    }
+                                },
+                                {
+                                    breakpoint: 768,
+                                    settings: {
+                                        slidesToShow: 2,
+                                        slidesToScroll: 2,
+                                        initialSlide: 2
+                                    }
+                                }
+                            ]
                         }}>
                             {
                                 products.map(it => <ProductCard product={it} key={it.id} />)
                             }
-                        </Slider> : <></>
+                        </Slider> : <>
+                            <div className="grid list-product gap-4 bg-white">
+                                {
+                                    products ? products.map(it => (
+                                        <ProductCard product={it}/>
+                                    )) : <></>
+                                }
+                            </div>
+                        </>
                     }
                 </div>
             </div>

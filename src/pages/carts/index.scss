@@ -15,3 +15,25 @@ h2 {
     border-bottom: 1px solid #0b850b;
   }
 }
+
+.cart-container {
+  width: 75%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.cart-wrapper {
+  width: 66%;
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.payment-info {
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}

@@ -11,54 +11,18 @@ import {getCategory, getProductWithFilter} from "@/redux/features/productSlice.t
 import {RootState} from "@/redux/store.ts";
 import AsyncWrapper from "@/layouts/AsyncWrapper.tsx";
 import {LoadingStatus} from "@/enums/enum.ts";
-
-const filters = [
-    {
-        label: "Tên A -> Z",
-        filter: "name",
-        state: false,
-        sort: "ASC"
-    },
-    {
-        label: "Tên Z -> A",
-        filter: "name",
-        state: false,
-        sort: "DESC"
-    },
-    {
-        label: "Giá tăng dần",
-        filter: "price",
-        state: false,
-        sort: "ASC"
-    },
-    {
-        label: "Giá giảm dần",
-        filter: "price",
-        state: false,
-        sort: "DESC"
-    },
-    {
-        label: "Mới nhất",
-        filter: "createAt",
-        state: false,
-        sort: "DESC"
-    },
-    {
-        label: "Mua nhiều nhất",
-        filter: "buycount",
-        state: false,
-        sort: "DESC"
-    }
-
-]
+import {Divider} from "@mui/material";
+import {useLocation} from "react-router-dom";
+import Helmet from "@/components/Helmet.tsx";
 
 function ProductsPage() {
-    const [current, setCurrent] = useState('');
+    const [current, setCurrent] = useState(' ');
     const [page, setPage] = useState(1)
     const [filter, setFilter] = useState("name")
     const [sort, setSort] = useState("ASC")
     const [search, setSearch] = useState("")
     const [categories, setCategories] = useState([])
+    const location = useLocation();
     const onPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
         dispatch(getProductWithFilter({
@@ -71,16 +35,13 @@ function ProductsPage() {
         }))
 
     };
-    const onClick: MenuProps['onClick'] = (e) => {
+    const onChangeCategory: MenuProps['onClick'] = (e) => {
         setCurrent(e.key)
-        dispatch(getProductWithFilter({
-            page: page - 1,
-            limit: 12,
-            filter: filter,
-            sort: sort,
-            search: search,
-            label: e.key == "Tất cả" ? '' : e.key
-        }))
+        //scroll to item has id = category-e.key
+        const element = document.getElementById(`category-${e.key}`)
+        if (element) {
+            element.scrollIntoView({behavior: "smooth"})
+        }
     };
 
     const dispatch = useAppDispatch();
@@ -97,10 +58,10 @@ function ProductsPage() {
 
     const items: MenuProps['items'] = [
         {
-            label: !current ? 'Tất cả' : current,
-            key: 'SubMenu',
+            label: !current ? 'Tất cả' : category?.find(it => it.key === current)?.label || 'Tất cả',
+            key: '*',
             icon: <BiCategory />,
-            children: [{label: "Tất cả", key: "Tất cả"}].concat(category)
+            children: [{label: "Tất cả", key: "Tất cả"}].concat(category || [])
         },
     ];
     const handleFilter = (filter: string, sort: string) => {
@@ -114,12 +75,38 @@ function ProductsPage() {
         }))
     }
 
+    useEffect(() => {
+        const element = document.getElementById(`category-${location.hash.replace("#", "")}`)
+        if (element) {
+            element.scrollIntoView({behavior: "smooth"})
+        }
+    }, [location.hash, products, category]);
+
 
     const getCategories = () => {
         dispatch(getCategory())
     }
 
-
+    const ProductCategory = (data: any) => {
+        if (products?.filter(it => it?.categories?.some(it => it.key === data.category)).length === 0) {
+            return <></>
+        }
+        return (
+            <>
+                <h3 className="bg-white category-nav pl-5 uppercase font-medium text-xl text-green-700 pt-5" id={`category-${data.category}`}>
+                    {category?.find(it => it.key === data.category)?.label}
+                </h3>
+                <div className="grid list-product gap-4 bg-white">
+                    {
+                        products ? products.filter(it => it?.categories?.some(it => it.key === data.category)).map(it => (
+                            <ProductCard product={it}/>
+                        )) : <></>
+                    }
+                </div>
+                <Divider />
+            </>
+        )
+    }
     const onSearch = (e) => {
         setSearch(e.target.value)
         dispatch(getProductWithFilter({
@@ -134,62 +121,28 @@ function ProductsPage() {
 
     return (
         <div className={"flex flex-col justify-center items-center bg-zinc-100"}>
+            <Helmet title={"Sản phẩm"}/>
             <div style={{fontSize: "20pt", marginTop: "30px"}}>
                 <h2>
                     sản phẩm giảm cân
                 </h2>
             </div>
-            <div className={"w-3/4 p-5 bg-white mt-5 font-sans"}>
-                <div className={"filter flex bg"}>
-                    <ul className={"ul_col ml-1 mb-0 w-full flex justify-between relative"}>
-                        <Menu className={"mr-5 w-1/5"} onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
-                        <li className={'w-4/5 flex relative'}>
-                            <ul className={"flex w-full justify-around pe-100 items-center"}>
-                                {
-                                    filters.map((it, index) => {
-                                        return  (it.filter == filter && it.sort == sort ?
-                                                <li key={it.label}>
-                                                    <p onClick={() => {
-                                                        setFilter(it.filter)
-                                                        setSort(it.sort)
-                                                        handleFilter(it.filter, it.sort)
-                                                    }} className={"filter-content bg-green-700 text-white"}>{it.label}</p>
-                                                </li> :
-                                                <li key={it.label}>
-                                                    <p onClick={() => {
-                                                        setFilter(it.filter)
-                                                        setSort(it.sort)
-                                                        handleFilter(it.filter, it.sort)
-                                                    }} className={"filter-content"}>{it.label}</p>
-                                                </li>
-                                            )
-                                        }
-                                    )
-                                }
-                            </ul>
-                        </li>
-                        <li className={'ml-16'}>
-                            <div className={'flex h-full items-center relative'}>
-                                <input className={'border rounded-2xl p-1 pl-4 text-xs'} value={search} onChange={onSearch}/>
-                                <div className={'absolute right-2 text-xs'}>
-                                    <GoSearch />
-                                </div>
-                            </div>
-                        </li>
+            <div className={"category-nav p-5 bg-white mt-5 font-sans"}>
+                <div className={"filter flex "}>
+                    <ul className={" ml-1 mb-0 w-full flex justify-between relative"}>
+                        <Menu className={"mr-5 w-full"} onClick={onChangeCategory} selectedKeys={[current]} mode="horizontal" items={items} />
                     </ul>
                 </div>
             </div>
             <AsyncWrapper loading={isLoading} fulfilled={true}>
-                <div className={"grid grid-cols-4 gap-4 bg-white w-3/4 p-8"}>
-                    {
-                        products ?
-                            products.map(it => {
-                                return <ProductCard key={it.id} product={it}/>
-                            })
-                            : <></>
-                    }
-                </div>
-                <Pagination page={page} count={totalPage} onChange={onPageChange}/>
+                {
+                    category && products ?
+                        category.map(it => {
+                            return <ProductCategory category={it.key} key={it.key}/>
+                        })
+                        : <></>
+                }
+                {/*<Pagination page={page} count={totalPage} onChange={onPageChange}/>*/}
             </AsyncWrapper>
         </div>
     );

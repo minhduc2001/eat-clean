@@ -8,33 +8,21 @@ import "slick-carousel/slick/slick-theme.css";
 
 import "./index.scss"
 import ProductCard from "@/components/product";
-import BlogCard from "@/components/blog";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks.ts";
 import {getBlogByPage, getProductByPage} from "@/redux/features/productSlice.ts";
 import {RootState} from "@/redux/store.ts";
-import {useLocation, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 import {countCart} from "@/redux/features/cartSlide.ts";
 import {toast} from "react-toastify";
 
 
 function HomePage() {
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    className: "slider center"
-  };
-
   const dispatch = useAppDispatch()
-
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const [countItem, setCountItem] = useState(4)
 
   useEffect(() => {
     dispatch(getProductByPage({page: 0, limit: 10}))
-    dispatch(getBlogByPage({page: 0, limit: 9}))
     if (localStorage.getItem("token")) {
       dispatch(countCart())
     }
@@ -46,16 +34,39 @@ function HomePage() {
         toast.success("Thanh toán thành công")
       }
     }
+    const handleResize = () => {
+      if (window.innerWidth < 468) {
+        setCountItem(1)
+      } else if (window.innerWidth < 1024) {
+        setCountItem(2)
+      } else if (window.innerWidth < 1440) {
+        setCountItem(3)
+      } else {
+        setCountItem(4)
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [])
 
   const products = useAppSelector((root: RootState) => root.product.products)
   const blogs =  useAppSelector((root: RootState) => root.product.blogs)
-  console.log(products)
   return (
     <>
       <Helmet title="Home" description="home page" />
       <AsyncWrapper loading={false} fulfilled={Boolean([])}>
-        <Carousel autoplay autoplaySpeed={3000} effect="fade" className={'min-h-[95vh] overflow-hidden'}>
+        <Carousel
+            autoplay
+            autoplaySpeed={2000}
+            effect="scrollx"
+            dotPosition="bottom"
+            draggable={true}
+            className='cursor-grab'>
           <div>
             <Image
                 src="https://healthyeating.shop/wp-content/uploads/2023/06/granola-sieu-hat-it-yen-mach-1.jpg"
@@ -79,10 +90,9 @@ function HomePage() {
               preview={false}
           />
         </Carousel>
-
-        <div className={"wrap-baseline"}>
+        <div className="wrap-baseline">
           <h2>
-            Hướng dẫn đặt hàng
+            Ưu đãi
           </h2>
           <div className={"wrap-items"}>
             <div className={"item"}>
@@ -90,7 +100,7 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-2-1.png"} />
                 </a>
-                <h3>Chọn món ăn</h3>
+                <p className="uppercase font-light">Chọn món ăn</p>
               </div>
             </div>
             <div className={"item"}>
@@ -98,7 +108,7 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-01-2-1.png"} />
                 </a>
-                <h3>Chọn lịch ăn</h3>
+                <p className="uppercase font-light">Chọn lịch ăn</p>
               </div>
             </div>
             <div className={"item"}>
@@ -106,7 +116,7 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-03-1.png"} />
                 </a>
-                <h3>Đặt hàng</h3>
+                <p className="uppercase font-light">Đặt hàng</p>
               </div>
             </div>
             <div className={"item"}>
@@ -114,54 +124,83 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-01-2.png"} />
                 </a>
-                <h3>Giao hàng</h3>
+                <p className="uppercase font-light">Giao hàng</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className={"menu"}>
+        <div className="menu">
           <h2>
-            Menu tuần
+            Combo trong tuần
           </h2>
           <div className={"menu-wrapper"}>
-            <div className={"menu-item"}>
-              <h3>
-                Chế độ ăn giảm cân eat clean
-              </h3>
-              <img src={"/img_1.jpeg"}/>
-            </div>
-            <div className={"menu-item"}>
-              <h3>
-                Chế độ ăn giảm cân eat clean
-              </h3>
-              <img src={"/img_2.jpeg"}/>
-            </div>
+            <Slider {...{
+              dots: false,
+              infinite: true,
+              speed: 500,
+              slidesToShow: Math.min(2, countItem),
+              slidesToScroll: 1,
+              className: "slider center",
+              enterMode: true,
+            }}>
+              <div className={"menu-item"}>
+                <img src={"/img_1.jpeg"}/>
+              </div>
+              <div className={"menu-item"}>
+                <img src={"/img_2.jpeg"}/>
+              </div>
+            </Slider>
           </div>
         </div>
 
         <div className={"products"} >
           <h2>
-            Sản phẩm ăn giảm can
+            Sản phẩm mới
           </h2>
           {
-              products ?
-              <Slider {...{
-                dots: false,
-                infinite: true,
-                speed: 500,
-                slidesToShow: Math.min(products.length, 4),
-                slidesToScroll: 1,
-                className: "slider center"
-              }}>
-                {
-                  products.map(it =>
-                      <ProductCard product={it} key={it.id} />
-                  )
-                }
-              </Slider> : <></>
+            products ?
+                <Slider {...{
+                  dots: false,
+                  infinite: true,
+                  speed: 500,
+                  slidesToShow: Math.min(products.length, 4),
+                  slidesToScroll: 1,
+                  className: "slider center",
+                  enterMode: true,
+                  responsive: [
+                    {
+                      breakpoint: 1024,
+                      settings: {
+                        slidesToShow: Math.min(products.length, 3),
+                        slidesToScroll: 1,
+                        infinite: true,
+                      }
+                    },
+                    {
+                      breakpoint: 768,
+                      settings: {
+                        slidesToShow: Math.min(products.length, 2),
+                        slidesToScroll: 1,
+                        infinite: true,
+                      }
+                    },
+                    {
+                      breakpoint: 468,
+                      settings: {
+                        slidesToShow: Math.min(products.length, 1),
+                        slidesToScroll: 1,
+                        infinite: true,
+                      }
+                    }]
+                }}>
+                  {
+                    products.map(it =>
+                        <ProductCard product={it} key={it.id} />
+                    )
+                  }
+                </Slider> : <></>
           }
-
         </div>
 
         <div className={"wrap-baseline"}>
@@ -174,7 +213,7 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-05.png"} />
                 </a>
-                <h3>Chọn món ăn</h3>
+                <p className="uppercase font-light">Chọn món ăn</p>
               </div>
             </div>
             <div className={"item"}>
@@ -182,7 +221,7 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-2-1.jpg"} />
                 </a>
-                <h3>Chọn lịch ăn</h3>
+                <p className="uppercase font-light">Chọn lịch ăn</p>
               </div>
             </div>
             <div className={"item"}>
@@ -190,7 +229,7 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-10.png"} />
                 </a>
-                <h3>Đặt hàng</h3>
+                <p className="uppercase font-light">Đặt hàng</p>
               </div>
             </div>
             <div className={"item"}>
@@ -198,41 +237,11 @@ function HomePage() {
                 <a href={"#"}>
                   <img src={"https://healthyeating.shop/wp-content/uploads/2020/12/che-do-an-giam-can-08.png"} />
                 </a>
-                <h3>Giao hàng</h3>
+                <p className="uppercase font-light">Giao hàng</p>
               </div>
             </div>
           </div>
         </div>
-
-        {/*blog*/}
-        <div className={"wrap-baseline blog"}>
-          <h2>
-            Tin tức
-          </h2>
-          {
-            blogs ? <Slider {...{
-              dots: true,
-              infinite: true,
-              slidesToShow: Math.min(blogs.length, 3),
-              slidesToScroll: 1,
-              autoplay: true,
-              speed: 1000,
-              autoplaySpeed: 3000,
-              cssEase: "linear",
-              className: "slider center"
-            }}>
-                  {
-                    blogs.map(it => <BlogCard color={'text-white'} key={it.id} data={it} />)
-                  }
-            </Slider> : <></>
-          }
-        </div>
-        <div id="fb-root"></div>
-        <div className="fb-page"
-             data-href="https://www.facebook.com/facebook"
-             data-width="380"
-             data-hide-cover="false"
-             data-show-facepile="false"></div>
       </AsyncWrapper>
     </>
   );

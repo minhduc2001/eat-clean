@@ -19,9 +19,41 @@ h2 {
 
 .container-content {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  width: 75%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .btn-action {
   padding-inline: 30px;
   padding-block: 10px;
+}
+
+.img-container {
+  width: 33%;
+}
+
+@media (max-width: 1200px) {
+  .img-container {
+    width: 100%;
+  }
+
+  .info-product {
+    width: 100%;
+  }
+}
+
+.list-product {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  padding: 10px;
+}
+
+@media (max-width: 1200px) {
+  .list-product {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
 }

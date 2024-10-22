@@ -7,7 +7,7 @@ const OrderPage = React.lazy(() => import("@/pages/order/index"));
 const IntroducePage = React.lazy(() => import("@/pages/introduce/index"));
 const ProductsPage = React.lazy(() => import("@/pages/products/index"));
 const DetailPage = React.lazy(() => import("@/pages/details/index"));
-const ToolPage = React.lazy(() => import("@/pages/tool/index"));
+const CombosPage = React.lazy(() => import("@/pages/tool/index"));
 const BlogPage = React.lazy(() => import("@/pages/blog/index"));
 const BlogDetailPage = React.lazy(() => import("@/pages/blogdetail/index"));
 const HistoryPage = React.lazy(() => import("@/pages/history/index"));
@@ -38,8 +38,8 @@ export const PUBLIC_ROUTES = [
     component: OrderPage,
   },
   {
-    path: "/tool",
-    component: ToolPage,
+    path: "/combo",
+    component: CombosPage,
   },
   {
     path: "/blog",

@@ -9,25 +9,25 @@ function ProductCard(props: any) {
         <div style={{padding: "10px"}}>
             <div className={"wrap-item pb-8"}>
                 <h3>
-                    <Link to={`/product/${data?.id}`}>
+                    <a href={`/product/${data?.id}`}>
                         {data.name}
-                    </Link>
+                    </a>
                 </h3>
-                <Link to={`/product/${data?.id}`}>
+                <a href={`/product/${data?.id}`}>
                     <div className={'overflow-hidden h-[200px]'}>
                         <img src={data.imgs[0]} className={'object-center object-contain'}/>
                     </div>
-                </Link>
-                <p className={"desc"}>
+                </a>
+                <p className={"line-clamp-2 text-sm"}>
                     {data.shortDescription}
                 </p>
                 <p className={"price-label"}>
                     Giá: <span>{formatCurrency(data.price)}</span>
                 </p>
                 <div className={"btn-order mb-5"}>
-                    <Link to={`/product/${data?.id}`}>
+                    <a href={`/product/${data?.id}`}>
                         Đặt hàng
-                    </Link>
+                    </a>
                 </div>
             </div>
         </div>

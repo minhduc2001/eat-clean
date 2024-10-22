@@ -18,6 +18,7 @@ import {
 } from "@mui/material"
 import {Badge} from "antd";
 import {formatCurrency} from "@/utils/convert.tsx";
+import Helmet from "@/components/Helmet.tsx";
 function HistoryPage() {
     const dispatch = useAppDispatch()
     const [page, setPage] = useState(0)
@@ -34,14 +35,15 @@ function HistoryPage() {
         dispatch(getBills({page: page - 1, limit: 10}))
     };
     return (
-        <div className={"flex flex-col justify-center items-center bg-zinc-100"}>
+        <div className={"flex flex-col justify-center items-center bg-zinc-100 min-h-[60vh]"}>
+            <Helmet title={"Lịch sử đặt hàng"}/>
             <div style={{fontSize: "20pt", marginTop: "30px"}}>
                 <h2>
                     Lịch sử đặt hàng
                 </h2>
             </div>
             <AsyncWrapper loading={isLoading} fulfilled={true}>
-                <div className={'w-[75%] bg-white mb-5 mt-5'}>
+                <div className={'w-9/12 bg-white mb-5 mt-5'}>
                     <TableContainer>
                         <Table>
                             <TableHead>
@@ -150,7 +152,7 @@ function ProductOrder(props: any) {
                             {props?.data?.foods?.name}
                         </p>
                     </h3>
-                    <span className="variant-title font-semibold ml-5">{props?.data?.quantity}</span>
+                    <span className="variant-title font-semibold ml-5">x{props?.data?.quantity}</span>
                 </div>
             </div>
         </div>

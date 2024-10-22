@@ -9,7 +9,6 @@ interface BlogCardProps {
 }
 
 function BlogCard(props: any) {
-    console.log(props?.data?.imgThumbnail)
     return (
         <div className={"blog-container"}>
             <Link to={`/blog/${props?.data?.id}`}>

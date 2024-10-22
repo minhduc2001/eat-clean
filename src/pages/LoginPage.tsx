@@ -110,10 +110,10 @@ function LoginPage() {
           </p>
         </div>
 
-        <div className="flex justify-around">
+        <div className="flex justify-around flex-wrap gap-3">
           <form
             action="#"
-            className="w-1/2 mr-5 bg-white p-8 rounded-lg shadow-lg"
+            className="bg-white p-8 rounded-lg shadow-lg flex-1"
             onSubmit={handleSubmitLogin}
           >
             <h1 className="text-2xl font-semibold mb-4">Login</h1>
@@ -193,7 +193,7 @@ function LoginPage() {
           </form>
 
           <Form
-            className="w-1/2 bg-white p-8 rounded-lg shadow-lg"
+            className="flex-1 bg-white p-8 rounded-lg shadow-lg"
             onFinish={handleSubmitRegister}
           >
             <h1 className="text-2xl font-semibold mb-4">Register</h1>

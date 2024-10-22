@@ -1,14 +1,13 @@
 .footer {
-  margin-top: 150px;
   background-image: url("https://healthyeating.shop/wp-content/themes/foody/FoodyContent/bgft.jpg");
   background-position: center;
   background-size: cover !important;
-  height: 350px;
   display: flex;
   justify-content: center;
-  padding-inline: 10%;
+
   color: white;
   padding-top: 50px;
+  flex-wrap: wrap;
 
   .logo-footer {
     max-width: 20%;
@@ -19,7 +18,6 @@
   }
 
   .footer-info {
-    max-width: 25%;
     padding: 10px;
 
     span {

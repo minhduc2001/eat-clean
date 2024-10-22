@@ -108,10 +108,19 @@ export const comment = createAsyncThunk(
     }
 );
 
-
+export const getCombo = createAsyncThunk(
+    "products/combo",
+    async (thunkAPI) => {
+        const response = await productApi.getCombo()
+        if (!response.success)
+            throw { message: response.message, errorCode: response.errorCode };
+        return response.data;
+    }
+);
 
 export interface ProductState {
     products: IProduct[] | null;
+    combos: IProduct[] | null;
     product: IProduct | null;
     comments: IComment[] | null;
     categories: ICategory[] | null;
@@ -127,14 +136,15 @@ export interface ProductState {
 const initialState: ProductState = {
     products: null,
     product: null,
-    categories: null,
+    categories: [],
     blogs: null,
     blog: null,
-    cart: null,
+    cart: [],
     bills: null,
     error: null,
     loading: LoadingStatus.Pending,
-    metadata: {totalPages: 1}
+    metadata: {totalPages: 1},
+    combos: []
 };
 
 const productSlice = createSlice({
@@ -195,6 +205,10 @@ const productSlice = createSlice({
 
                     return it;
                 })
+            })
+            .addCase(getCombo.fulfilled, (state, action) => {
+                if (action.payload == null) return;
+                state.combos = action.payload;
             })
             .addMatcher(
                 (action) => action.type.includes("rejected"),
