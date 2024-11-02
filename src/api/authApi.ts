@@ -1,4 +1,4 @@
-import {ILoginData, IRegisterData, IToken, IUser, Wrapper} from "@/interfaces";
+import {ILoginData, IRegisterData, IToken, IUser} from "@/interfaces";
 import Api from "./api";
 
 class AuthApi {

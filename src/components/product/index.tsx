@@ -4,7 +4,6 @@ import {Link} from "react-router-dom";
 import {formatCurrency} from "@/utils/convert.tsx";
 function ProductCard(props: any) {
     const data = props.product
-    console.log(data)
     return (
         <div style={{padding: "10px"}}>
             <div className={"wrap-item pb-8"}>
@@ -18,7 +17,7 @@ function ProductCard(props: any) {
                         <img src={data.imgs[0]} className={'object-center object-contain'}/>
                     </div>
                 </a>
-                <p className={"line-clamp-2 text-sm"}>
+                <p className={"line-clamp-2 h-10 text-sm"}>
                     {data.shortDescription}
                 </p>
                 <p className={"price-label"}>

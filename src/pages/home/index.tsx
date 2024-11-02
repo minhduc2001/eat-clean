@@ -55,7 +55,6 @@ function HomePage() {
   }, [])
 
   const products = useAppSelector((root: RootState) => root.product.products)
-  const blogs =  useAppSelector((root: RootState) => root.product.blogs)
   return (
     <>
       <Helmet title="Home" description="home page" />

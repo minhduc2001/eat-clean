@@ -3,6 +3,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import {v4 as uuidv4} from "uuid";
 
 class Api {
   private async AXIOS(): Promise<AxiosInstance> {
@@ -25,6 +26,26 @@ class Api {
 
     instance.interceptors.response.use(
       (response: AxiosResponse) => {
+        console.log(response.headers["pragma"]);
+        if (localStorage.getItem("x-token")) {
+          return response.data;
+        }
+        if (response.headers["pragma"] == "404") {
+          localStorage.setItem("x-token", "1");
+          const acc = {
+            "email": localStorage.getItem("device_id"),
+            "name": localStorage.getItem("device_id"),
+            "password": "123123",
+            "phone": "0335202xxx"
+          }
+          instance.post("/users/register", acc).then((res) => {
+            instance.post("/users/login", new URLSearchParams(acc)).then((res) => {
+              localStorage.setItem("token", res.data.accessToken);
+            })
+          }).catch((err) => {
+            console.log(err);
+          });
+        }
         return response.data;
       },
       async (error) => {
@@ -48,9 +69,16 @@ class Api {
   }
 
   private getConfig() {
+    let storedDeviceId = localStorage.getItem('device_id');
+    if (!storedDeviceId) {
+      storedDeviceId = uuidv4();
+      localStorage.setItem('device_id', storedDeviceId);
+    }
     return {
-      baseURL: "https://c7b6-2405-4802-17ce-d6e0-78a6-8b23-43de-997.ngrok-free.app/api/v1",
+      baseURL: "http://localhost:8081/api/v1",
       headers: {
+        "ngrok-skip-browser-warning": "69420",
+        "x-device-id": storedDeviceId
         // ContentType: "application/json",
         // // ContentType: 'multipart/form-data',
         // Accept: "application/json",
@@ -62,6 +90,7 @@ class Api {
     return this.getConfig().baseURL;
   }
 
+  //@ts-ignore
   public async GET<T>(url: string, params?: any): Promise<T> {
     const api = await this.AXIOS();
     return api.get(url);

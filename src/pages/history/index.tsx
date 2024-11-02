@@ -76,7 +76,7 @@ function HistoryPage() {
                                                 </Typography>
                                             </TableCell>
                                             <TableCell>
-                                                <div className={'flex flex-col max-h-[100px] overflow-scroll'}>
+                                                <div className={'flex flex-col bg-white max-h-[100px] overflow-auto'}>
                                                     {it.carts.map(it =>
                                                         <ProductOrder data={it} />
                                                     )}
@@ -139,9 +139,9 @@ function HistoryPage() {
 function ProductOrder(props: any) {
     console.log(props, 'ssss')
     return (
-        <div className="flex h-full items-center w-[300px] max-h-[100px] justify-around">
+        <div className="flex h-full items-center w-[300px]  max-h-[100px] justify-around">
             <div className="w-[50px]">
-                <a className="product-images1  pos-relative embed-responsive embed-responsive-1by1" title="Trà Gạo Lứt Đông Trùng Wise Food 300g, 20 Gói /Hộp Giảm Stress Hiệu Quả">
+                <a className="pos-relative embed-responsive embed-responsive-1by1" title="Trà Gạo Lứt Đông Trùng Wise Food 300g, 20 Gói /Hộp Giảm Stress Hiệu Quả">
                     <img className="w-full" src={props?.data?.foods?.imgs[0]} />
                 </a>
             </div>

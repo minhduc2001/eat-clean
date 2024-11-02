@@ -4,7 +4,7 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {Badge, Drawer, Menu, Dropdown} from "antd";
-import {useAppSelector} from "@/redux/hooks.ts";
+import useDeviceId, {useAppSelector} from "@/redux/hooks.ts";
 import {RootState} from "@/redux/store.ts";
 import {Button} from "@mui/material";
 import {useEffect, useState} from "react";
@@ -15,6 +15,7 @@ function Header() {
     const isLogin = localStorage.getItem("token")
     const totalOrder = useAppSelector((root: RootState) => root.cart.totalOrder)
     const navigate = useNavigate()
+    const deviceId = useDeviceId()
     const showDrawer = () => {
         setVisible(true);
     };
@@ -36,14 +37,10 @@ function Header() {
         </Menu>
     );
 
-    const [numberAccess, setNumberAccess] = useState(0);
-
     // Handle window resize
     useEffect(() => {
-        if (!localStorage.getItem("token")) {
-            if (location.pathname == "/history" || location.pathname == "/cart" || location.pathname == "/order") {
-                navigate("/login", {replace: true})
-            }
+        if (location.pathname == "/login") {
+            navigate("/")
         }
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
@@ -100,34 +97,6 @@ function Header() {
                                     </Link>
                             }
                         </li>
-                        <li>
-                            {
-                                !isLogin ?
-                                    <Link to={"/login"} className="menu-item text-gray-700">
-                                        Đăng nhập
-                                    </Link> :
-                                    <Link to={"/cart"}>
-                                        <Badge count={totalOrder ?? 1}>
-                                            <ShoppingBagOutlinedIcon />
-                                        </Badge>
-                                    </Link>
-                            }
-                        </li>
-                        <li>
-                            {
-                                !isLogin ?
-                                    <></> :
-                                    <button
-                                        className="menu-item text-gray-700"
-                                        onClick={() => {
-                                        localStorage.clear()
-                                        location.reload()
-                                        navigate("/", {replace: true})
-                                    }}>
-                                        <LogoutIcon />
-                                    </button>
-                            }
-                        </li>
                     </ul>
                 </div>
             </Drawer>
@@ -175,11 +144,7 @@ function Header() {
                             }
                         </li>
                         <li>
-                            {
-                                !isLogin ?
-                                <Link to={"/login"} >
-                                    Đăng nhập
-                                </Link> :
+                            {isLogin &&
                                 <Link to={"/cart"}>
                                     <Badge count={totalOrder ?? 1}>
                                         <ShoppingBagOutlinedIcon />
@@ -191,12 +156,8 @@ function Header() {
                             {
                                 !isLogin ?
                                     <></> :
-                                    <Button onClick={() => {
-                                        localStorage.clear()
-                                        location.reload()
-                                        window.location.href = "/"
-                                    }}>
-                                       <LogoutIcon />
+                                    <Button disabled={true}>
+                                       {/*<LogoutIcon />*/}
                                     </Button>
                             }
                         </li>

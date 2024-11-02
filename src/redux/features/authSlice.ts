@@ -1,7 +1,7 @@
 import authApi from "@/api/authApi";
 import { toastOption } from "@/configs/notification.config";
 import { LoadingStatus } from "@/enums/enum";
-import { ILoginData, IRegisterData, IUser } from "@/interfaces";
+import { ILoginData, IUser } from "@/interfaces";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
