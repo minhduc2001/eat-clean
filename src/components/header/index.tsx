@@ -15,7 +15,6 @@ function Header() {
     const isLogin = localStorage.getItem("token")
     const totalOrder = useAppSelector((root: RootState) => root.cart.totalOrder)
     const navigate = useNavigate()
-    const deviceId = useDeviceId()
     const showDrawer = () => {
         setVisible(true);
     };
@@ -45,8 +44,6 @@ function Header() {
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
         };
-
-        console.log('access')
 
         window.addEventListener("resize", handleResize);
 
@@ -89,13 +86,16 @@ function Header() {
                             </Link>
                         </li>
                         <li>
-                            {
-                                !isLogin ?
-                                    <></> :
-                                    <Link to={"/history"} className="menu-item text-gray-700">
-                                        Lịch sử đặt hàng
-                                    </Link>
-                            }
+                            <Link to={"/history"} className="menu-item text-gray-700">
+                                Lịch sử đặt hàng
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={"/cart"}>
+                                <Badge count={totalOrder ?? 1}>
+                                    <ShoppingBagOutlinedIcon />
+                                </Badge>
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -144,13 +144,11 @@ function Header() {
                             }
                         </li>
                         <li>
-                            {isLogin &&
-                                <Link to={"/cart"}>
-                                    <Badge count={totalOrder ?? 1}>
-                                        <ShoppingBagOutlinedIcon />
-                                    </Badge>
-                                </Link>
-                            }
+                            <Link to={"/cart"}>
+                                <Badge count={totalOrder ?? 1}>
+                                    <ShoppingBagOutlinedIcon />
+                                </Badge>
+                            </Link>
                         </li>
                         <li>
                             {
